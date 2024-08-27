@@ -1,0 +1,169 @@
+.dashboard {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: var(--white-color);
+  padding: var(--size-1);
+  display: block;
+  overflow-y: auto;
+}
+.dashboard .section-1 {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--size-1);
+}
+.dashboard .section-1 .section-1-item {
+  width: 24.5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: var(--size-1);
+  border-radius: var(--size-09);
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+}
+.dashboard .section-1 .section-1-item .caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.dashboard .section-1 .section-1-item .caption .icon {
+  color: var(--color-1);
+  font-size: var(--size-105);
+  margin-bottom: var(--size-03);
+}
+.dashboard .section-1 .section-1-item .caption span {
+  color: var(--grey-color-1);
+  font-size: var(--size-07);
+  font-weight: 500;
+}
+.dashboard .section-1 .section-1-item .t-2 {
+  color: var(--color-1);
+  font-size: var(--size-2);
+  font-weight: 700;
+  margin: 0;
+}
+
+.dashboard .section-2 {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--size-1);
+}
+.dashboard .section-2 .section-2-left {
+  width: 15%;
+  display: block;
+  padding: var(--size-07);
+}
+.dashboard .section-2 .section-2-left .t-3 {
+  color: var(--grey-color-1);
+  font-size: var(--size-1) var(--size-08);
+  font-weight: 600;
+}
+.dashboard .section-2 .section-2-left .s2l-item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: var(--size-1);
+  border-bottom: 1px dashed var(--grey-color-2);
+  padding: var(--size-1);
+}
+.dashboard .section-2 .section-2-left .s2l-item .t-2 {
+  color: var(--black-color);
+  font-size: var(--size-102);
+  font-weight: 700;
+}
+.dashboard .section-2 .section-2-left .s2l-item span {
+  color: var(--grey-color-1);
+  font-size: var(--size-07);
+  font-weight: 500;
+}
+.dashboard .section-2 .section-2-right {
+  width: 84%;
+  display: block;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  border-radius: var(--size-04);
+}
+.dashboard .section-2 .section-2-right .s2r-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--size-08);
+}
+.dashboard .section-2 .section-2-right .s2r-head .t-2 {
+  margin: 0;
+  color: var(--grey-color-1);
+  font-size: var(--size-1);
+  font-weight: 600;
+}
+.dashboard .section-2 .section-2-right .s2r-head .s2r-head-actions {
+  display: flex;
+  align-items: center;
+}
+.dashboard .section-2 .section-2-right .s2r-head .s2r-head-actions select {
+  border: 1px solid var(--grey-color-3);
+  border-radius: var(--size-07);
+  padding: var(--size-05);
+  margin-right: var(--size-07);
+}
+.dashboard .section-2 .section-2-right .s2r-head .s2r-head-actions .button {
+  color: var(--white-color);
+  background-color: var(--black-color);
+  font-size: var(--size-08);
+  padding: var(--size-05);
+  display: flex;
+  align-items: center;
+}
+.dashboard
+  .section-2
+  .section-2-right
+  .s2r-head
+  .s2r-head-actions
+  .button
+  .icon {
+  margin-right: var(--size-04);
+}
+.dashboard .section-2 .section-2-right .s2r-body {
+  width: 100%;
+  height: 470px;
+}
+
+.dashboard .section-3 {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.dashboard .section-3 .s3-item {
+  width: 30%;
+}
+.dashboard .section-3 .s3-item .t-2 {
+  font-size: var(--size-1);
+  font-weight: 600;
+}
+.dashboard .section-3 .s3-item .s3-item-details {
+  width: 100%;
+}
+.dashboard .section-3 .s3-item .s3-item-details .s3id-row {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--grey-color-2);
+  padding: var(--size-08);
+}
+.dashboard .section-3 .s3-item .s3-item-details .s3id-row .s3id-row-left,
+.dashboard .section-3 .s3-item .s3-item-details .s3id-row .s3id-row-right {
+  display: flex;
+  flex-direction: column;
+}
+.dashboard .section-3 .s3-item .s3-item-details .s3id-row .s3id-row-left span {
+  color: var(--grey-color-1);
+  font-size: var(--size-09);
+  margin-bottom: var(--size-05);
+}
+.dashboard .section-3 .s3-item .s3-item-details .s3id-row .s3id-row-right span {
+  color: var(--grey-color-1);
+  font-size: var(--size-09);
+  margin-bottom: var(--size-05);
+}

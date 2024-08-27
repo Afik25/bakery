@@ -1,0 +1,52 @@
+.msg-box {
+  width: 100%;
+  background-color: var(--grey-color-3);
+  border-radius: var(--size-05);
+  padding: var(--size-1) var(--size-03);
+  margin-bottom: var(--size-05);
+}
+.msg-box .msg-box-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.msg-box .msg-box-container .icon-wrapper {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--grey-color-2);
+  border-radius: var(--size-1);
+}
+.msg-box .msg-box-container .icon-wrapper .icon {
+  font-size: var(--size-105);
+}
+.msg-box .msg-box-container .icon-wrapper .icon-info {
+  color: var(--color-1);
+}
+.msg-box .msg-box-container .icon-wrapper .icon-success {
+  color: var(--green-color);
+}
+.msg-box .msg-box-container .icon-wrapper .icon-warning {
+  color: var(--gold-color);
+}
+.msg-box .msg-box-container .icon-wrapper .icon-error {
+  color: var(--red-color);
+}
+.msg-box .msg-box-container .msg-details {
+  width: calc(100% - 60px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.msg-box .msg-box-container .msg-details .title {
+  margin: 0;
+}
+.msg-box .msg-box-container .msg-details .t-2 {
+  font-size: var(--size-08);
+  margin-bottom: var(--size-05);
+}
+.msg-box .msg-box-container .msg-details .t-3 {
+  font-size: var(--size-08);
+}

@@ -1,0 +1,20 @@
+.link {
+  color: var(--color-6);
+  text-decoration: none;
+}
+.title {
+  text-decoration: none;
+  letter-spacing: 1px;
+  color: var(--black-color);
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.t-1 {
+  font-size: var(--size-1);
+}
+.t-2 {
+  font-size: var(--size-09);
+}
+.t-3 {
+  font-size: var(--size-07);
+}

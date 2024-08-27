@@ -1,0 +1,75 @@
+{
+  "terms": {
+    "agree": "I agree with",
+    "term": "the terms of use",
+    "privacy": "and the privacy policy."
+  },
+  "header": {
+    "text-1": "Home",
+    "text-2": "Features",
+    "text-3": "Pricing",
+    "text-4": "Community",
+    "text-5": "Sign In",
+    "text-6": "Sign Up"
+  },
+  "home": {
+    "text-1": "Best E-Learning Platform",
+    "text-2": "Getting Best Quality Education Is Now More Easier!",
+    "text-3": "Learning is a Global training provider based across the AFRICA that specialises in accredited and bespoke training courses.",
+    "text-4": "Join Course",
+    "text-5": "Research the content you want, anyway your study level!",
+    "text-6": "Find course, lessons, exercices, solutions, and more...",
+    "text-7": "Contents available and explained for primary, secondary, high school and university!",
+    "text-8": "Programs",
+    "text-9": "Courses",
+    "text-10": "Lessons",
+    "text-11": "Exercices",
+    "text-12": "Platform responsive and easily accessible, get access to the Learning content with any devices, anywhere, anytime.",
+    "text-13": "Click below to Download!",
+    "text-14": "Program's Orientation",
+    "text-15": "With MASOMO, take advantage of a 3-month orientation grant in software engineering or artificial intelligence.",
+    "text-16": "Get started and launch your journey.",
+    "text-17": "Based on a convincing vision, they decided to work with us."
+  },
+  "footer": {
+    "text-1": "Standard management platform for all.",
+    "text-2": "Navigation",
+    "text-3": "Contact",
+    "text-4": "All Rights Reserved",
+    "text-5": "Powered by AFIK FOUNDATION",
+    "text-6": "Privacy policy",
+    "text-7": "Term and conditions"
+  },
+  "login": {
+    "text-1": "Hello, Welcome Back!",
+    "text-2": "Get connnected, and manage your operations in whole security.",
+    "text-3": "Forgot password ?",
+    "text-4": "Or",
+    "text-5": "Don't have an account yet ?",
+    "text-6": "Sign Up",
+    "text-7": "Very good works are waiting for you. Login Now",
+    "text-8": "All right reserved.",
+    "text-9": "Username required",
+    "text-10": "Password required"
+  },
+  "register": {
+    "text-1": "Tell us a little about your business.",
+    "text-2": "The information will be filled in at the first login. And it can also be completed at any time.",
+    "text-3": "Inscription !",
+    "text-4": "Are you already registred ?",
+    "text-5": "Sign In",
+    "text-6": "Take your registration and study at your own pace, and learn more!",
+    "text-7": "Information about organization",
+    "text-8": "Information about physic address",
+    "text-9": "Information about user account",
+    "forgot": "Forgot Password",
+    "reset": "Reset Password",
+    "text-10": "Send a link to your e-mail to reset your password",
+    "text-11": "Please choose your new Password"
+  },
+  "notFound": {
+    "text-1": "Page not found",
+    "text-2": "The link you clicked may be broken or the page may have been removed or renamed.",
+    "text-3": "Go Back"
+  }
+}

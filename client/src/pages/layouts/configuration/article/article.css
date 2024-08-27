@@ -1,0 +1,191 @@
+.articles {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: var(--white-color);
+}
+.articles .inner,
+.articles .outer {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+/* Inner */
+.articles .inner {
+  display: block;
+}
+.articles .inner .actions {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--size-02) 0;
+}
+.articles .inner .actions .left {
+  display: flex;
+}
+.articles .inner .actions .left .inputs-form {
+  position: relative;
+}
+.articles .inner .actions .left .inputs-form input {
+  position: relative;
+  width: 300px;
+  height: 100%;
+  padding: var(--size-02) var(--size-02) var(--size-02) var(--size-107);
+  border-radius: var(--size-05);
+  border: 1px solid var(--grey-color-2);
+}
+.articles .inner .actions .left .inputs-form .icon {
+  position: absolute;
+  top: var(--size-05);
+  left: var(--size-03);
+  z-index: 1;
+}
+.articles .inner .actions .left .button {
+  display: flex;
+  align-items: center;
+  background-color: var(--black-color);
+  font-size: var(--size-07);
+  margin: 0 var(--size-02);
+}
+.articles .inner .actions .left .button .icon {
+  margin-right: var(--size-07);
+}
+.articles .inner .actions .left select {
+  border-radius: var(--size-05);
+  border-color: var(--grey-color-2);
+  font-size: var(--size-08);
+  padding: var(--size-02);
+}
+.articles .inner .actions .right {
+  max-width: 25%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.articles .inner .actions .right .button {
+  display: flex;
+  align-items: center;
+  background-color: var(--black-color);
+  font-size: var(--size-07);
+  margin: 0 var(--size-02);
+}
+.articles .inner .actions .right .button:hover {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+.articles .inner .actions .right .button .icon {
+  margin-right: var(--size-05);
+}
+.articles .inner .actions .right .button.btn-new {
+  background-color: var(--color-1);
+}
+.articles .inner .actions .right .button.btn-export {
+  background-color: var(--black-color);
+}
+.articles .inner .actions .right .button.btn-validate {
+  background-color: var(--green-color);
+}
+.articles .inner .content {
+  width: 100%;
+  height: calc(100% - 80px);
+}
+.articles .inner .content .table .row {
+  display: flex;
+  align-items: center;
+}
+.articles .inner .content .table .row img {
+  max-width: 45px;
+  max-height: 45px;
+  border: 1px solid var(--grey-color-2);
+  border-radius: 100%;
+  padding: var(--size-02);
+  margin-right: var(--size-05);
+}
+.articles .inner .content .table .row .content-details {
+  display: block;
+}
+.articles .inner .content .table .row .content-details .title {
+  margin: 0;
+  font-weight: 700;
+}
+.articles .inner .content .table .row .content-details .t-2 {
+  font-size: var(--size-1);
+}
+.articles .inner .content .table .row .content-details .t-3 {
+  font-size: var(--size-09);
+  color: var(--grey-color-1);
+}
+.articles .inner .content .table .btn-action {
+  background-color: var(--black-color);
+  font-size: var(--size-07);
+  margin: 0 var(--size-02);
+}
+/* Outer */
+.articles .outer {
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  padding: var(--size-1);
+}
+.articles .outer .wrapper {
+  width: 50%;
+  background-color: var(--white-color);
+  border-radius: var(--size-05);
+  margin: auto;
+  padding: var(--size-05);
+}
+.articles .outer .wrapper .fp-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.articles .outer .wrapper .fp-head .t-2 {
+  margin: 0;
+  font-size: var(--size-1);
+  font-weight: 600;
+}
+.articles .outer .wrapper .fp-head span {
+  cursor: pointer;
+  font-size: var(--size-2);
+}
+.articles .outer .wrapper hr {
+  border: none;
+  width: 100%;
+  height: 1px;
+  background-color: var(--grey-color-2);
+  margin: var(--size-1) 0;
+}
+.articles .outer .wrapper form {
+  width: 100%;
+}
+.articles .outer .wrapper form .img-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: var(--size-05) 0;
+}
+.articles .outer .wrapper form .img-wrapper img {
+  width: 80px;
+  height: 80px;
+  border-radius: 100%;
+  border: 1px solid var(--grey-color-2);
+  padding: var(--size-02);
+  margin: 0 var(--size-08);
+}
+.articles .outer .wrapper form .img-wrapper .button {
+  width: 20%;
+  background-color: var(--black-color);
+  font-size: var(--size-07);
+}
+.articles .outer .wrapper form .row {
+  display: flex;
+  justify-content: space-between;
+}
+.articles .outer .wrapper form .row .input-div {
+  width: 49%;
+}
+.articles .outer .wrapper form .button {
+  width: 100%;
+  background-color: var(--color-1);
+}

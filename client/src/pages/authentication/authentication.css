@@ -1,0 +1,75 @@
+.sign {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sign .container {
+  width: 40%;
+  display: block;
+  text-align: center;
+}
+.sign .container .head {
+  width: 300px;
+  height: 220px;
+  margin: auto;
+}
+.sign .container .head img {
+  width: 100%;
+  height: 100%;
+}
+.sign .container .t-2 {
+  font-weight: 700;
+  font-size: var(--size-1);
+}
+.sign .container .t-3 {
+  font-weight: 700;
+  font-size: var(--size-2);
+}
+.sign .container form .row {
+  width: 100%;
+  display: flex;
+}
+.sign .container form .row .input-div {
+  width: 49%;
+}
+.sign .container form .row-input {
+  justify-content: space-between;
+}
+.sign .container form .row .link {
+  color: var(--color-1);
+}
+.sign .container form .row .link:hover {
+  color: var(--grey-color-1);
+}
+.sign .container form .row-1 {
+  justify-content: flex-end;
+  margin-bottom: var(--size-1);
+}
+.sign .container form .row-2 {
+  justify-content: center;
+  margin-top: var(--size-1);
+}
+.sign .container form .row-2 span {
+  margin-right: var(--size-05);
+}
+.sign .container form .button {
+  width: 100%;
+}
+
+@media only screen and (max-width: 768px) {
+  .sign .container {
+    width: 90%;
+  }
+  .sign .container .head {
+    width: 200px;
+    height: 120px;
+  }
+  .sign .container form .row .input-div {
+    width: 100%;
+  }
+  .sign .container form .row-input {
+    flex-direction: column;
+  }
+}

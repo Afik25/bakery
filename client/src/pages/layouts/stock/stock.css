@@ -1,0 +1,239 @@
+.stocks {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: var(--white-color);
+}
+.stocks .inner,
+.stocks .outer {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+/* Inner */
+.stocks .inner {
+  display: block;
+}
+.stocks .inner .inner-head {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  border-bottom: 1px dashed var(--grey-color-2);
+}
+.stocks .inner .inner-head .ih-left,
+.stocks .inner .inner-head .ih-right {
+  width: 50%;
+  height: 100%;
+}
+.stocks .inner .inner-head .ih-left .t-2 {
+  font-size: var(--size-102);
+  font-weight: 700;
+}
+.stocks .inner .inner-head .ih-left .t-3 {
+  font-size: var(--size-07);
+  font-weight: 600;
+}
+.stocks .inner .inner-head .ih-right {
+  display: flex;
+  align-items: center;
+}
+.stocks .inner .inner-head .ih-right .button {
+  border: 1px solid var(--black-color);
+  color: var(--black-color);
+  font-size: var(--size-07);
+  margin: 0 var(--size-05);
+}
+.stocks .inner .inner-head .ih-right .button.active-view {
+  background-color: var(--black-color);
+  color: var(--white-color);
+}
+.stocks .inner .actions {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--size-02) 0;
+}
+.stocks .inner .actions .left {
+  display: flex;
+}
+.stocks .inner .actions .left .inputs-form {
+  position: relative;
+  margin-right: var(--size-02);
+}
+.stocks .inner .actions .left .inputs-form input,
+.stocks .inner .actions .left .inputs-form select {
+  position: relative;
+  width: 300px;
+  height: 100%;
+  padding: var(--size-02) var(--size-02) var(--size-02) var(--size-107);
+  border-radius: var(--size-05);
+  border: 1px solid var(--grey-color-2);
+}
+.stocks .inner .actions .left .button {
+  display: flex;
+  align-items: center;
+  background-color: var(--black-color);
+  font-size: var(--size-07);
+  margin: 0 var(--size-02);
+}
+.stocks .inner .actions .left .button .icon {
+  margin-right: var(--size-07);
+}
+.stocks .inner .actions .left select {
+  border-radius: var(--size-05);
+  border-color: var(--grey-color-2);
+  font-size: var(--size-08);
+  padding: var(--size-02);
+}
+.stocks .inner .actions .right {
+  max-width: 25%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.stocks .inner .actions .right .button {
+  display: flex;
+  align-items: center;
+  background-color: var(--black-color);
+  font-size: var(--size-07);
+  margin: 0 var(--size-02);
+}
+.stocks .inner .actions .right .button:hover {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+.stocks .inner .actions .right .button .icon {
+  margin-right: var(--size-05);
+}
+.stocks .inner .actions .right .button.btn-new {
+  background-color: var(--color-1);
+}
+.stocks .inner .actions .right .button.btn-export {
+  background-color: var(--black-color);
+}
+.stocks .inner .actions .right .button.btn-validate {
+  background-color: var(--green-color);
+}
+.stocks .inner .content {
+  width: 100%;
+  height: calc(100% - 95px);
+}
+.stocks .inner .content .table .row {
+  display: flex;
+  align-items: center;
+}
+.stocks .inner .content .table .row img {
+  max-width: 45px;
+  max-height: 45px;
+  border: 1px solid var(--grey-color-2);
+  border-radius: 100%;
+  padding: var(--size-02);
+  margin-right: var(--size-05);
+}
+.stocks .inner .content .table .row .content-details {
+  display: block;
+}
+.stocks .inner .content .table .row .content-details .title {
+  margin: 0;
+  font-weight: 700;
+}
+.stocks .inner .content .table .row .content-details .t-2 {
+  font-size: var(--size-1);
+}
+.stocks .inner .content .table .row .content-details .t-3 {
+  font-size: var(--size-09);
+  color: var(--grey-color-1);
+}
+.stocks .inner .content .table .btn-action {
+  background-color: var(--black-color);
+  font-size: var(--size-07);
+  margin: 0 var(--size-02);
+}
+.stocks .inner .content .table .stock-state {
+  border-radius: var(--size-05);
+  padding: var(--size-05) var(--size-07);
+  font-size: var(--size-07);
+  color: var(--white-color);
+  font-weight: 600;
+}
+.stocks .inner .content .table .stock-state.in-stock {
+  background-color: var(--green-color);
+}
+.stocks .inner .content .table .stock-state.out-stock {
+  background-color: var(--red-color);
+}
+.stocks .inner .content .table .stock-state.low-stock {
+  background-color: var(--color-1);
+}
+.stocks .inner .content .table .stock-state.critically-low {
+  background-color: var(--grey-color-1);
+}
+/* Outer */
+.stocks .outer {
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  padding: var(--size-1);
+}
+.stocks .outer .wrapper {
+  width: 50%;
+  background-color: var(--white-color);
+  border-radius: var(--size-05);
+  margin: auto;
+  padding: var(--size-05);
+}
+.stocks .outer .wrapper .fp-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.stocks .outer .wrapper .fp-head .t-2 {
+  margin: 0;
+  font-size: var(--size-1);
+  font-weight: 600;
+}
+.stocks .outer .wrapper .fp-head span {
+  cursor: pointer;
+  font-size: var(--size-2);
+}
+.stocks .outer .wrapper hr {
+  border: none;
+  width: 100%;
+  height: 1px;
+  background-color: var(--grey-color-2);
+  margin: var(--size-1) 0;
+}
+.stocks .outer .wrapper form {
+  width: 100%;
+}
+.stocks .outer .wrapper form .img-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: var(--size-05) 0;
+}
+.stocks .outer .wrapper form .img-wrapper img {
+  width: 80px;
+  height: 80px;
+  border-radius: 100%;
+  border: 1px solid var(--grey-color-2);
+  padding: var(--size-02);
+  margin: 0 var(--size-08);
+}
+.stocks .outer .wrapper form .img-wrapper .button {
+  width: 20%;
+  background-color: var(--black-color);
+  font-size: var(--size-07);
+}
+.stocks .outer .wrapper form .row {
+  display: flex;
+  justify-content: space-between;
+}
+.stocks .outer .wrapper form .row .input-div {
+  width: 49%;
+}
+.stocks .outer .wrapper form .button {
+  width: 100%;
+  background-color: var(--color-1);
+}

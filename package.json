@@ -1,0 +1,17 @@
+{
+  "name": "bakery",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "cd server && npm install && cd ../client && npm install && npm run build",
+    "start": "cd server && node ./src/server.js",
+    "server": "node ./server/src/server.js",
+    "client": "cd client && npm start",
+    "dev-c": "cd client && npm start",
+    "dev-s": "cd server && npm run dev"
+  },
+  "keywords": [],
+  "author": "Afik Foundation",
+  "license": "ISC"
+}

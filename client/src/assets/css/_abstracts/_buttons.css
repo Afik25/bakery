@@ -1,0 +1,22 @@
+.button {
+  padding: var(--size-08);
+  border: none;
+  border-radius: var(--size-03);
+  color: var(--white-color);
+  cursor: pointer;
+  text-decoration: none;
+  letter-spacing: 1px;
+  transition: all 0.3s ease-in-out;
+}
+.button:hover {
+  background-color: var(--grey-color-2);
+}
+.normal {
+  background-color: var(--color-1);
+}
+.validate {
+  background-color: var(--green-color);
+}
+.danger {
+  background-color: var(--red-color);
+}

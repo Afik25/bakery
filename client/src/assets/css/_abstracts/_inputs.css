@@ -1,0 +1,97 @@
+.input-div {
+  width: 100%;
+  position: relative;
+  margin-bottom: var(--size-1);
+}
+.input-div .input-form,
+.input-div .input-select,
+.input-div .input-textarea {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  font-size: var(--size-1);
+  border: 1px solid var(--grey-color-2);
+  border-radius: var(--size-07);
+  padding: 0.6rem;
+  background-color: transparent;
+  z-index: 1;
+}
+.input-div .input-textarea {
+  resize: none;
+}
+.input-div .label-form,
+.input-div .label-icon {
+  position: absolute;
+  left: var(--size-07);
+  top: 0.7rem;
+  padding: 0 0.25rem;
+  background: none;
+  color: var(--grey-color-1);
+  font-size: var(--size-1);
+  transition: 0.3s;
+}
+.input-div .label-form {
+  z-index: 0;
+}
+.input-div .label-icon {
+  cursor: pointer;
+  left: unset;
+  right: var(--size-07);
+  z-index: 2;
+}
+.input-div .input-textarea:focus,
+.input-div .input-form:focus {
+  border: 1.5px solid var(--color-2);
+  background: none;
+}
+.input-div .input-form:focus + .label-form {
+  top: -0.8em;
+  left: 0.8em;
+  background-color: var(--white-color);
+  color: var(--color-2);
+  font-size: var(--size-04);
+  font-weight: 500;
+  z-index: 10;
+}
+.input-div .input-form:focus ~ .label-icon {
+  background-color: var(--white-color);
+  color: var(--color-2);
+}
+.input-div .input-textarea:focus + .label-form {
+  top: -0.8em;
+  left: 0.8em;
+  background-color: var(--white-color);
+  color: var(--color-2);
+  font-size: var(--size-04);
+  font-weight: 500;
+  z-index: 10;
+}
+.input-div .input-textarea:focus ~ .label-icon {
+  background-color: var(--white-color);
+  color: var(--color-2);
+}
+
+.input-div
+  .input-textarea:not(:placeholder-shown).input-textarea:not(:focus)
+  + .label-form {
+  top: -0.7rem;
+  left: 0.7rem;
+  font-size: var(--size-04);
+  font-weight: 500;
+  z-index: 10;
+}
+.input-div
+  .input-form:not(:placeholder-shown).input-form:not(:focus)
+  + .label-form {
+  top: -0.7rem;
+  left: 0.7rem;
+  font-size: var(--size-04);
+  font-weight: 500;
+  z-index: 10;
+}
+
+.input-div span {
+  color: var(--red-color);
+  font-size: var(--size-05);
+}

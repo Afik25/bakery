@@ -1,0 +1,111 @@
+.header {
+  width: 100%;
+  height: 80px;
+}
+.header.fixed {
+  position: fixed;
+  background-color: var(--white-color);
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+  transition: all 0.3s ease-in-out;
+  z-index: 99;
+}
+.header .container {
+  width: 80%;
+  height: 100%;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header .container .logo {
+  width: 120px;
+  height: 80px;
+}
+.header .container .drawer {
+  cursor: pointer;
+  display: none;
+}
+.header .container .drawer .icon {
+  font-size: var(--size-205);
+}
+.header .container .navs {
+  display: flex;
+  align-items: center;
+}
+.header .container .navs .nav {
+  margin: 0 var(--size-05);
+  font-weight: 600;
+}
+.header .container .navs .nav:hover {
+  color: var(--color-1);
+  transition: all 0.3s ease-in-out;
+}
+.header .container .navs .order-btn {
+  background-color: var(--color-1);
+  color: var(--white-color);
+  font-weight: bold;
+  border-radius: var(--size-05);
+  padding: var(--size-07);
+}
+.header .container .navs .order-btn:hover {
+  background-color: var(--color-3);
+  color: var(--black-color);
+  transition: all 0.5s ease-in-out;
+}
+.header .container .signs {
+  display: flex;
+  align-items: center;
+}
+.header .container .signs .link {
+  color: var(--color-1);
+  font-weight: 700;
+}
+.header .container .signs .link:hover {
+  color: var(--black-color);
+}
+.header .container .signs .button {
+  background-color: var(--color-1);
+  color: var(--white-color);
+  font-weight: 700;
+  font-size: var(--size-08);
+  margin-left: var(--size-07);
+}
+.header .container .signs .button:hover {
+  background-color: var(--color-2);
+}
+
+@media only screen and (max-width: 768px) {
+  .header {
+    overflow: hidden;
+  }
+  .header-auto {
+    height: auto;
+  }
+  .header .container {
+    width: 95%;
+    flex-wrap: wrap;
+  }
+  .header .container .logo {
+    font-size: var(--size-1);
+  }
+  .header .container .drawer {
+    display: block;
+  }
+  .header .container .navs{
+    width: 100%;
+    flex-direction: column;
+  }
+  .header .container .navs .nav {
+    font-size: var(--size-08);
+    font-weight: 600;
+    margin: var(--size-03) 0;
+  }
+  .header .container .signs{
+    width: 100%;
+    justify-content: center;
+    padding: var(--size-05) 0;
+  }
+  .header .container .button {
+    font-size: var(--size-07);
+  }
+}

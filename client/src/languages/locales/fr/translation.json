@@ -1,0 +1,75 @@
+{
+  "terms": {
+    "agree": "J'accepte",
+    "term": "les conditions d'utilisations",
+    "privacy": "et la politique de confidentialité."
+  },
+  "header": {
+    "text-1": "Accueil",
+    "text-2": "Modules",
+    "text-3": "Prix",
+    "text-4": "Communauté",
+    "text-5": "Connexion",
+    "text-6": "Inscription"
+  },
+  "home": {
+    "text-1": "Meilleure plateforme d'apprentissage en ligne",
+    "text-2": "Il est désormais plus facile d'obtenir une éducation de Qualité!",
+    "text-3": "Learning is a Global training provider based across the AFRICA that specialises in accredited and bespoke training courses.",
+    "text-4": "Commencer les cours",
+    "text-5": "Research the content you want, anyway your study level!",
+    "text-6": "Find course, lessons, exercices, solutions, and more...",
+    "text-7": "Contents available and explained for primary, secondary, high school and university!",
+    "text-8": "Programs",
+    "text-9": "Courses",
+    "text-10": "Lessons",
+    "text-11": "Exercices",
+    "text-12": "Platform responsive and easily accessible, get access to the Learning content with any devices, anywhere, anytime.",
+    "text-13": "Click below to Download!",
+    "text-14": "Program's Orientation",
+    "text-15": "With MASOMO, take advantage of a 3-month orientation grant in software engineering or artificial intelligence.",
+    "text-16": "Get started and launch your journey.",
+    "text-17": "Based on a convincing vision, they decided to work with us."
+  },
+  "footer": {
+    "text-1": "École numérique pour tous.",
+    "text-2": "Navigation",
+    "text-3": "Contact",
+    "text-4": "Tous droits réservés",
+    "text-5": "Développé par AFIK FOUNDATION",
+    "text-6": "Politique de confidentialité",
+    "text-7": "Conditions d'utilisation"
+  },
+  "login": {
+    "text-1": "Salut, Bienvenue!",
+    "text-2": "Connectez-vous, et faites vos opérations en toute sécurité.",
+    "text-3": "Mot de passe oublié ?",
+    "text-4": "Ou",
+    "text-5": "N'avez-vous pas encore un compte ?",
+    "text-6": "Inscrivez-vous",
+    "text-7": "Un très bon travail vous attend. Connectez-vous maintenant",
+    "text-8": "Tous droits réservés.",
+    "text-9": "Renseigner le nom d'utilisateur",
+    "text-10": "Renseigner le mot de passe"
+  },
+  "register": {
+    "text-1": "Parlez nous un peu de votre business.",
+    "text-2": "Les informations seront complétées à la première connexion. Et elles peuvent aussi être complétées à tout moment.",
+    "text-3": "Inscription !",
+    "text-4": "Etes-vous déjà inscrit ?",
+    "text-5": "Connectez-vous",
+    "text-6": "Prenez votre inscription et étudier à votre rythme, et apprenez plus!",
+    "text-7": "Information sur l'organisation",
+    "text-8": "Information sur l'adresse physique",
+    "text-9": "Information sur le compte utilisateur",
+    "forgot": "Mot de passe oublié",
+    "reset": "Réinitialiser mot de passe",
+    "text-10": "Envoyer un lien dans votre mail pour réinitialiser votre mot de passe",
+    "text-11": "Renseignez votre nouveau mot de passe"
+  },
+  "notFound": {
+    "text-1": "Page non trouvée",
+    "text-2": "Le lien sur lequel vous avez cliqué peut être rompu ou la page peut avoir été supprimée ou renommée.",
+    "text-3": "Revenir en arrière"
+  }
+}
