@@ -1,0 +1,124 @@
+.product-wrapper {
+  width: 100vw;
+  height: 100vh;
+  overflow-y: auto;
+}
+.product-wrapper .product-body {
+  width: 100%;
+}
+.product-wrapper .product-body .product-body-content {
+  width: 80%;
+  margin: auto;
+  padding: var(--size-5) 0;
+}
+.product-wrapper .product-body .product-body-content .t-1 {
+  font-size: var(--size-3);
+}
+.product-wrapper .product-body .product-body-content hr {
+  width: 10%;
+  height: 5px;
+  background-color: var(--color-2);
+  border: none;
+  margin: var(--size-3) 0;
+}
+.product-wrapper .product-body .product-body-content .t-3 {
+  font-size: var(--size-107);
+  font-weight: 500;
+  text-align: justify;
+}
+.product-wrapper .product-body .product-body-content .content-items,
+.product-wrapper
+  .product-body
+  .product-body-content
+  .content-items
+  .product-item {
+  width: 100%;
+  display: block;
+}
+.product-wrapper
+  .product-body
+  .product-body-content
+  .content-items
+  .product-item {
+  margin-bottom: var(--size-105);
+}
+.product-wrapper
+  .product-body
+  .product-body-content
+  .content-items
+  .product-item
+  .t-2 {
+  color: var(--color-2);
+  font-size: var(--size-2);
+  font-weight: 700;
+}
+
+.product-wrapper
+  .product-body
+  .product-body-content
+  .content-items
+  .product-item
+  .pi-desc {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.pi-desc .pi-desc-item {
+  width: calc(100% / 4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--size-105);
+}
+.pi-desc .pi-desc-item img {
+  width: 80%;
+  margin-bottom: var(--size-08);
+}
+.pi-desc .pi-desc-item .t-3 {
+  font-weight: 600;
+}
+.pi-desc .pi-desc-item .t-4 {
+  text-align: center;
+}
+@media only screen and (max-width: 768px) {
+  .product-wrapper .product-body .product-body-content {
+    width: 90%;
+    padding: var(--size-1) 0;
+  }
+  .product-wrapper .product-body .product-body-content .t-1 {
+    font-size: var(--size-2);
+  }
+  .product-wrapper .product-body .product-body-content hr {
+    margin: var(--size-2) 0;
+  }
+  .product-wrapper .product-body .product-body-content .t-3 {
+    font-size: var(--size-105);
+  }
+  .product-wrapper
+    .product-body
+    .product-body-content
+    .content-items
+    .product-item
+    .t-2 {
+    font-size: var(--size-105);
+  }
+  .product-wrapper
+    .product-body
+    .product-body-content
+    .content-items
+    .product-item
+    .pi-desc {
+    flex-direction: column;
+  }
+  .pi-desc .pi-desc-item {
+    width: 100%;
+    padding: var(--size-1);
+  }
+  .pi-desc .pi-desc-item img {
+    width: 80%;
+  }
+  .pi-desc .pi-desc-item .t-4 {
+    color: var(--grey-color-1);
+  }
+}

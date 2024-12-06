@@ -1,0 +1,27 @@
+.loader {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: rgba(0, 0, 0, 0.5); */
+}
+.loader img {
+  width: 10%;
+  animation: beat 2s linear infinite;
+}
+
+@keyframes beat {
+  0% {
+    transform: scale(0.75);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.75);
+    opacity: 0.5;
+  }
+}

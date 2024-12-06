@@ -4,6 +4,8 @@ const connection = new sequelize(database);
 //
 // Admin
 const User = require("../api/v1/models/users/User");
+const Newsletter = require("../api/v1/models/users/Newsletter");
+const Message = require("../api/v1/models/users/Message");
 const Login = require("../api/v1/models/users/Login");
 const Inscription = require("../api/v1/models/users/Inscription");
 const Category = require("../api/v1/models/article/Category");
@@ -16,6 +18,8 @@ const StockMovement = require("../api/v1/models/article/StockMovement");
 // Models connection links
 //
 User.init(connection);
+Newsletter.init(connection);
+Message.init(connection);
 Login.init(connection);
 Inscription.init(connection);
 Category.init(connection);

@@ -17,102 +17,44 @@
 .users .inner .inner-head {
   width: 100%;
   height: 50px;
-  display: flex;
   border-bottom: 1px dashed var(--grey-color-2);
 }
-.users .inner .inner-head .ih-left,
-.users .inner .inner-head .ih-right {
-  width: 50%;
-  height: 100%;
-}
-.users .inner .inner-head .ih-left .t-2 {
+.users .inner .inner-head .t-2 {
   font-size: var(--size-102);
   font-weight: 700;
 }
-.users .inner .inner-head .ih-left .t-3 {
+.users .inner .inner-head .t-3 {
   font-size: var(--size-07);
   font-weight: 600;
-}
-.users .inner .inner-head .ih-right {
-  display: flex;
-  align-items: center;
-}
-.users .inner .inner-head .ih-right .button {
-  border: 1px solid var(--black-color);
-  color: var(--black-color);
-  font-size: var(--size-07);
-  margin: 0 var(--size-05);
-}
-.users .inner .inner-head .ih-right .button.active-view {
-  background-color: var(--black-color);
-  color: var(--white-color);
 }
 .users .inner .actions {
   width: 100%;
   height: 40px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   padding: var(--size-02) 0;
 }
-.users .inner .actions .left {
-  display: flex;
-}
-.users .inner .actions .left .inputs-form {
-  position: relative;
-  margin-right: var(--size-02);
-}
-.users .inner .actions .left .inputs-form input,
-.users .inner .actions .left .inputs-form select {
-  position: relative;
-  width: 300px;
-  height: 100%;
-  padding: var(--size-02) var(--size-02) var(--size-02) var(--size-107);
-  border-radius: var(--size-05);
-  border: 1px solid var(--grey-color-2);
-}
-.users .inner .actions .left .button {
+.users .inner .actions .button {
   display: flex;
   align-items: center;
   background-color: var(--black-color);
   font-size: var(--size-07);
   margin: 0 var(--size-02);
 }
-.users .inner .actions .left .button .icon {
-  margin-right: var(--size-07);
-}
-.users .inner .actions .left select {
-  border-radius: var(--size-05);
-  border-color: var(--grey-color-2);
-  font-size: var(--size-08);
-  padding: var(--size-02);
-}
-.users .inner .actions .right {
-  max-width: 25%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-.users .inner .actions .right .button {
-  display: flex;
-  align-items: center;
-  background-color: var(--black-color);
-  font-size: var(--size-07);
-  margin: 0 var(--size-02);
-}
-.users .inner .actions .right .button:hover {
+.users .inner .actions .button:hover {
   background-color: rgba(0, 0, 0, 0.5) !important;
 }
-.users .inner .actions .right .button .icon {
+.users .inner .actions .button .icon {
   margin-right: var(--size-05);
 }
-.users .inner .actions .right .button.btn-new {
+.users .inner .actions .button.btn-new {
   background-color: var(--color-1);
 }
-.users .inner .actions .right .button.btn-export {
+.users .inner .actions .button.btn-export {
   background-color: var(--black-color);
 }
-.users .inner .actions .right .button.btn-validate {
+.users .inner .actions .button.btn-validate {
   background-color: var(--green-color);
 }
 .users .inner .content {

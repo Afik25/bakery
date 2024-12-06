@@ -1,7 +1,7 @@
 import React from "react";
 import "../users.css";
 import LOGO from "../../../assets/logo.png";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { NavLink } from "../../../routes/NavLink";
 import {
   MdOutlineDashboard,
@@ -15,11 +15,20 @@ import {
 } from "../../../middlewares/icons";
 import { capitalize } from "../../../utils/utils";
 import { useSelector } from "react-redux";
+import useLogout from "../../../hooks/context/state/useLogout";
 
 const Administration = () => {
+  const navigate = useNavigate();
+  const logout = useLogout();
+
   const connectedUser = useSelector(
     (state) => state.setInitConf.initConnectedUser.connectedUserData
   );
+
+  const signOut = async () => {
+    await logout();
+    navigate("/sign-in");
+  };
 
   return (
     <div className="user">
@@ -29,52 +38,111 @@ const Administration = () => {
         </div>
         <div className="body">
           <div className="navigation">
-            <NavLink
-              activeClassName="active-option"
-              inactiveClassName="inactive-option"
-              className="link-option"
-              to="/admin"
-              exact={true}
-            >
-              <MdOutlineDashboard className="option-icon" />
-              <span>Tableau de bord</span>
-            </NavLink>
-            <NavLink
-              activeClassName="active-option"
-              inactiveClassName="inactive-option"
-              className="link-option"
-              to="/admin/orders"
-            >
-              <BsBasket className="option-icon" />
-              <span>Commandes</span>
-            </NavLink>
-            <NavLink
-              activeClassName="active-option"
-              inactiveClassName="inactive-option"
-              className="link-option"
-              to="/admin/stocks"
-            >
-              <FiPackage className="option-icon" />
-              <span>Stocks</span>
-            </NavLink>
-            <NavLink
-              activeClassName="active-option"
-              inactiveClassName="inactive-option"
-              className="link-option"
-              to="/admin/users"
-            >
-              <FiUsers className="option-icon" />
-              <span>Utilisateurs</span>
-            </NavLink>
-            <NavLink
-              activeClassName="active-option"
-              inactiveClassName="inactive-option"
-              className="link-option"
-              to="/admin/configuration"
-            >
-              <IoSettingsOutline className="option-icon" />
-              <span>Configuration</span>
-            </NavLink>
+            {connectedUser?.userInfo?.sys_role === "admin" && (
+              <>
+                <NavLink
+                  activeClassName="active-option"
+                  inactiveClassName="inactive-option"
+                  className="link-option"
+                  to="/admin"
+                  exact={true}
+                >
+                  <MdOutlineDashboard className="option-icon" />
+                  <span>Tableau de bord</span>
+                </NavLink>
+                <NavLink
+                  activeClassName="active-option"
+                  inactiveClassName="inactive-option"
+                  className="link-option"
+                  to="/admin/orders"
+                >
+                  <BsBasket className="option-icon" />
+                  <span>Commandes</span>
+                </NavLink>
+                <NavLink
+                  activeClassName="active-option"
+                  inactiveClassName="inactive-option"
+                  className="link-option"
+                  to="/admin/stocks"
+                >
+                  <FiPackage className="option-icon" />
+                  <span>Stocks</span>
+                </NavLink>
+                <NavLink
+                  activeClassName="active-option"
+                  inactiveClassName="inactive-option"
+                  className="link-option"
+                  to="/admin/users"
+                >
+                  <FiUsers className="option-icon" />
+                  <span>Utilisateurs</span>
+                </NavLink>
+                <NavLink
+                  activeClassName="active-option"
+                  inactiveClassName="inactive-option"
+                  className="link-option"
+                  to="/admin/configuration"
+                >
+                  <IoSettingsOutline className="option-icon" />
+                  <span>Configuration</span>
+                </NavLink>
+              </>
+            )}
+            {connectedUser?.userInfo?.sys_role === "manager" && (
+              <>
+                <NavLink
+                  activeClassName="active-option"
+                  inactiveClassName="inactive-option"
+                  className="link-option"
+                  to="/manager"
+                  exact={true}
+                >
+                  <BsBasket className="option-icon" />
+                  <span>Commandes</span>
+                </NavLink>
+                <NavLink
+                  activeClassName="active-option"
+                  inactiveClassName="inactive-option"
+                  className="link-option"
+                  to="/manager/stocks"
+                >
+                  <FiPackage className="option-icon" />
+                  <span>Stocks</span>
+                </NavLink>
+                <NavLink
+                  activeClassName="active-option"
+                  inactiveClassName="inactive-option"
+                  className="link-option"
+                  to="/manager/configuration"
+                >
+                  <IoSettingsOutline className="option-icon" />
+                  <span>Configuration</span>
+                </NavLink>
+              </>
+            )}
+            {connectedUser?.userInfo?.sys_role === "user" && (
+              <>
+                <NavLink
+                  activeClassName="active-option"
+                  inactiveClassName="inactive-option"
+                  className="link-option"
+                  to="/user"
+                  exact={true}
+                >
+                  <BsBasket className="option-icon" />
+                  <span>Commandes</span>
+                </NavLink>
+                <NavLink
+                  activeClassName="active-option"
+                  inactiveClassName="inactive-option"
+                  className="link-option"
+                  to="/user/configuration"
+                >
+                  <IoSettingsOutline className="option-icon" />
+                  <span>Configuration</span>
+                </NavLink>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -100,7 +168,7 @@ const Administration = () => {
                   capitalize(connectedUser?.userInfo?.lastname)}
               </h3>
             </div>
-            <button className="button logout">
+            <button className="button logout" onClick={signOut}>
               <FiLogOut className="icon-element" />
               <span>Déconnexion</span>
             </button>

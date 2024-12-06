@@ -11,5 +11,4 @@ export const ORDERS = "/orders";
 // 
 // User
 export const USERS = "/users";
-export const REGISTER = "/users/register";
 

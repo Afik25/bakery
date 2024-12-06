@@ -7,19 +7,8 @@ const { generatePassword, generateOTP } = require("../../../../utils/utils");
 module.exports = {
   async create(req, res) {
     try {
-      const {
-        prename,
-        name,
-        gender,
-        telephone,
-        mail,
-        birth,
-        birth_location,
-        role_id,
-        username,
-      } = req.body;
-
-      const thumbnails = req?.file?.filename || "";
+      const { firstname, lastname, gender, telephone, mail, sys_role } =
+        req.body;
 
       const phone = telephone || null;
       if (phone) {
@@ -47,44 +36,28 @@ module.exports = {
         }
       }
 
-      const check_username = await User.findOne({
-        where: { username: username },
-      });
-      if (check_username) {
-        return res.status(400).json({
-          status: 0,
-          message: `The username ${username} is already used!`,
-        });
-      }
-      const password = generatePassword(6);
+      // const password = generatePassword(6);
       const user = await User.create({
-        prename,
-        name,
+        firstname: firstname.toLowerCase(),
+        lastname: lastname.toLowerCase(),
         gender,
         telephone,
-        mail,
-        birth,
-        birth_location,
-        role_id,
-        username,
-        password,
-        thumbnails,
-        path_to: "/user",
-        is_completed: false,
+        mail: mail.toLowerCase(),
+        sys_role,
+        password: "mariathe",
       });
 
       if (user) {
         return res.status(200).json({
-          status: 1,
-          password,
+          status: true,
           message: `The registration of ${
-            prename.charAt(0).toUpperCase() + prename.slice(1).toLowerCase()
-          } ${name.toUpperCase()} has been successfully done.`,
+            firstname.charAt(0).toUpperCase() + firstname.slice(1).toLowerCase()
+          } ${lastname.toUpperCase()} has been successfully done. The password is ${"password"}`,
           user,
         });
       }
       return res.status(400).json({
-        status: 0,
+        status: false,
         message: `The registration of ${
           prename.charAt(0).toUpperCase() + prename.slice(1).toLowerCase()
         } ${name.toUpperCase()} failed.`,

@@ -42,11 +42,12 @@
 }
 .msg-box .msg-box-container .msg-details .title {
   margin: 0;
+  color: var(--black-color);
 }
 .msg-box .msg-box-container .msg-details .t-2 {
   font-size: var(--size-08);
   margin-bottom: var(--size-05);
 }
 .msg-box .msg-box-container .msg-details .t-3 {
-  font-size: var(--size-08);
+  font-size: var(--size-09);
 }

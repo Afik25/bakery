@@ -33,8 +33,9 @@
   align-items: center;
 }
 .header .container .navs .nav {
-  margin: 0 var(--size-05);
   font-weight: 600;
+  font-size: var(--size-1);
+  margin: 0 var(--size-05);
 }
 .header .container .navs .nav:hover {
   color: var(--color-1);
@@ -42,9 +43,10 @@
 }
 .header .container .navs .order-btn {
   background-color: var(--color-1);
-  color: var(--white-color);
-  font-weight: bold;
   border-radius: var(--size-05);
+  color: var(--white-color);
+  font-size: var(--size-08);
+  font-weight: bold;
   padding: var(--size-07);
 }
 .header .container .navs .order-btn:hover {
@@ -78,8 +80,9 @@
   .header {
     overflow: hidden;
   }
-  .header-auto {
-    height: auto;
+  .header.open-drawer {
+    transition: all 0.3s ease-in-out;
+    height: auto !important;
   }
   .header .container {
     width: 95%;
@@ -91,7 +94,7 @@
   .header .container .drawer {
     display: block;
   }
-  .header .container .navs{
+  .header .container .navs {
     width: 100%;
     flex-direction: column;
   }
@@ -100,7 +103,7 @@
     font-weight: 600;
     margin: var(--size-03) 0;
   }
-  .header .container .signs{
+  .header .container .signs {
     width: 100%;
     justify-content: center;
     padding: var(--size-05) 0;

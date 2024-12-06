@@ -28,6 +28,18 @@ export const onHandleFile = (_file, _newName) => {
   return newFile;
 };
 
+export const amountFormatter = (amount) => {
+  // Create a formatter for 'de-DE' locale (German), which uses '.' as thousand separator and ',' as decimal separator
+  const formatter = new Intl.NumberFormat("de-DE", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  // Format the number
+  const formattedAmount = formatter.format(amount);
+
+  return formattedAmount;
+};
+
 export const validationSchemaLogin = Yup.object().shape({
   mail: Yup.string().required("L'Adresse E-mail est requise."),
   password: Yup.string().required("Le Mot de passe est requis."),
@@ -94,4 +106,47 @@ export const validationSchemaOrder = Yup.object().shape({
     "Le statut de la commande/vente doit être renseigné."
   ),
   customer: Yup.string().required("Le client doit être renseigné."),
+});
+
+export const validationSchemaCustomerOrder = Yup.object().shape({
+  names: Yup.string().required("Renseignez votre noms."),
+  mail: Yup.string().required("Renseignez votre adresse mail."),
+  telephone: Yup.string().required("Renseignez votre numéro de téléphone."),
+});
+
+export const validationSchemaUser = Yup.object().shape({
+  firstname: Yup.string().required("Veuillez renseigner le prénom."),
+  lastname: Yup.string().required("Veuillez renseigner le nom."),
+  gender: Yup.string().required("Veuillez renseigner le genre."),
+  telephone: Yup.string().required("Veuillez renseigner le téléphone."),
+  mail: Yup.string().required("Veuillez renseigner l'e-mail."),
+  sys_role: Yup.string().required("Veuillez renseigner le rôle."),
+});
+// newsletter
+export const validationSchemaNewsletter = Yup.object().shape({
+  mail: Yup.string().required("Veuillez renseigner votre address e-mail."),
+});
+// messaging
+export const validationSchemaMessage = Yup.object().shape({
+  firstname: Yup.string().required("Veuillez renseigner votre prénom."),
+  lastname: Yup.string().required("Veuillez renseigner votre nom."),
+  subject: Yup.string().required(
+    "Veuillez renseigner l'intutilé de votre message."
+  ),
+  message: Yup.string().required("Veuillez saisir votre message."),
+});
+// change password
+export const validationSchemaChangePassword = Yup.object().shape({
+  old_password: Yup.string().required(
+    "Veuillez renseigner votre ancien mot de passe."
+  ),
+  new_password: Yup.string()
+    .required("Veuillez renseigner votre nouveau mot de passe.")
+    .min(4, "Le mot de passe doit avoir au moins 4 caractères"),
+  confirm_new_password: Yup.string()
+    .required("Veuillez confirmer votre nouveau de passe.")
+    .oneOf(
+      [Yup.ref("new_password"), null],
+      "Les mot de passes doivent correspondre!"
+    ),
 });

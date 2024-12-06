@@ -1,7 +1,45 @@
 const ASSETS = {
-    logo: require("../assets/logo.png"),
-    //
-  };
-  
-  export default ASSETS;
-  
+  logo: require("../assets/logo.png"),
+  BAKERY1: require("../assets/images/bakery/bakery1.png"),
+  BAKERY2: require("../assets/images/bakery/bakery2.png"),
+  BAKERY3: require("../assets/images/bakery/bakery3.png"),
+  BAKERY4: require("../assets/images/bakery/bakery4.png"),
+  BAKERY5: require("../assets/images/bakery/bakery5.png"),
+  BAKERY6: require("../assets/images/bakery/bakery6.png"),
+  BAKERY7: require("../assets/images/bakery/bakery7.png"),
+  BAKERY8: require("../assets/images/bakery/bakery8.png"),
+  BAKERY9: require("../assets/images/bakery/bakery9.png"),
+  BAKERY10: require("../assets/images/bakery/bakery10.png"),
+  BAKERY11: require("../assets/images/bakery/bakery11.png"),
+  //
+  HANDS: require("../assets/images/hands.png"),
+  mariathe_viennoiseries: require("../assets/mariathe_viennoiseries.jpg"),
+  communion: require("../assets/images/communion.jpg"),
+  //
+  AIRTEL_MONEY: require("../assets/images/pay/airtel-money.png"),
+  M_PESA: require("../assets/images/pay/m-pesa-logo.png"),
+  MASTERCARD: require("../assets/images/pay/matsercard.png"),
+  ORANGE_MONEY: require("../assets/images/pay/orange-money.png"),
+  VISA: require("../assets/images/pay/visa.png"),
+  //
+  squareBread: require("../assets/images/products/square-bread.png"),
+  boulBread: require("../assets/images/products/boul_bread.jpg"),
+  baguettesBread: require("../assets/images/products/baguettes_bread.avif"),
+  pistoletBread: require("../assets/images/products/pistolet_bread.png"),
+  v_croissants: require("../assets/images/products/v_croissants.avif"),
+  v_brioches: require("../assets/images/products/v_brioches.jpg"),
+  viennoiseries: require("../assets/images/products/viennoiseries.jpg"),
+  s_jambon: require("../assets/images/products/sandwich_jambon.png"),
+  s_oeufs: require("../assets/images/products/sandwich_oeufs.png"),
+  s_egg: require("../assets/images/products/sandwich_egg.png"),
+  samosa_viande: require("../assets/images/products/samosa_viande.png"),
+  samosa_poulet: require("../assets/images/products/samosas-poulet.png"),
+  cake: require("../assets/images/products/cake.png"),
+  tarte: require("../assets/images/products/tarte.jpg"),
+  eclairs: require("../assets/images/products/eclairs.png"),
+  cup_of_wine: require("../assets/images/products/cup_of_wine.webp"),
+  cup_of_wine2: require("../assets/images/products/cup_of_wine2.webp"),
+  hosties: require("../assets/images/products/hosties.png"),
+};
+
+export default ASSETS;

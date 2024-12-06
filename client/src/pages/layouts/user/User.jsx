@@ -1,27 +1,24 @@
 import React, { useState, useEffect } from "react";
 import "./user.css";
-import { FaPlus, BsFilter, FaFileExport } from "../../../middlewares/icons";
+import { FaPlus } from "../../../middlewares/icons";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
-import { isEmpty, wait, validationSchemaStock } from "../../../utils/utils";
-import { onGetArticles } from "../../../services/configuration";
 import {
-  onGetStocks,
-  onGetStockMovements,
-  onCreateStockMovement,
-  onUpdateStockMovement,
-} from "../../../services/stock";
+  isEmpty,
+  wait,
+  validationSchemaUser,
+  capitalize,
+} from "../../../utils/utils";
+import { onGetUsers, onCreateUser, onUpdateUser } from "../../../services/user";
 import useAxiosPrivate from "../../../hooks/context/state/useAxiosPrivate";
 import MessageBox from "../../../components/msgBox/MessageBox";
 import moment from "moment";
-import ASSETS from "../../../utils/Assets";
 
 const User = () => {
   const [onNew, setOnNew] = useState(false);
   const axiosPrivate = useAxiosPrivate();
   const dispatch = useDispatch();
-  const [isOperation, setIsOperation] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [isShowingMessage, setIsShowingMessage] = useState(false);
@@ -32,23 +29,9 @@ const User = () => {
     const controller = new AbortController();
     const signal = controller.signal;
 
-    onGetArticles(axiosPrivate, signal).then((result) => {
+    onGetUsers(axiosPrivate, signal).then((result) => {
       dispatch({
-        type: "setUp/getArticles",
-        payload: result,
-      });
-    });
-
-    onGetStockMovements(axiosPrivate, signal).then((result) => {
-      dispatch({
-        type: "setUpStock/getStockMovements",
-        payload: result,
-      });
-    });
-
-    onGetStocks(axiosPrivate, signal).then((result) => {
-      dispatch({
-        type: "setUpStock/getStocks",
+        type: "setUpUser/getUsers",
         payload: result,
       });
     });
@@ -59,16 +42,8 @@ const User = () => {
     };
   }, []);
 
-  const articles = useSelector(
-    (state) => state.setInitConf?.initArticles?.articlesData
-  );
-
-  const stockMovements = useSelector(
-    (state) => state.setStockSlice?.initStockMovements?.stockMovementsData
-  );
-
-  const stocks = useSelector(
-    (state) => state.setStockSlice?.initStocks?.stocksData
+  const users = useSelector(
+    (state) => state.setUserSlice?.initUsers?.usersData
   );
 
   const {
@@ -79,10 +54,7 @@ const User = () => {
     formState: { errors },
   } = useForm({
     mode: "all",
-    resolver: yupResolver(validationSchemaStock),
-    defaultValues: {
-      id: "",
-    },
+    resolver: yupResolver(validationSchemaUser),
   });
 
   const onSubmit = async (data) => {
@@ -94,23 +66,16 @@ const User = () => {
     const signal = controller.signal;
     //
     !isUpdating
-      ? onCreateStockMovement(axiosPrivate, data)
+      ? onCreateUser(axiosPrivate, data)
           .then((response) => {
             if (response?.data?.status) {
               setIsSending(false);
               setIsShowingMessage(true);
               setMessage({ type: "success", text: response?.data?.message });
               //
-              onGetStockMovements(axiosPrivate, signal).then((result) => {
+              onGetUsers(axiosPrivate, signal).then((result) => {
                 dispatch({
-                  type: "setUpStock/getStockMovements",
-                  payload: result,
-                });
-              });
-              //
-              onGetStocks(axiosPrivate, signal).then((result) => {
-                dispatch({
-                  type: "setUpStock/getStocks",
+                  type: "setUpUser/getUsers",
                   payload: result,
                 });
               });
@@ -141,23 +106,16 @@ const User = () => {
             }, 4000);
             return () => clearTimeout(timer);
           })
-      : onUpdateStockMovement(axiosPrivate, data)
+      : onUpdateUser(axiosPrivate, data)
           .then((response) => {
             if (response?.data?.status) {
               setIsSending(false);
               setIsShowingMessage(true);
               setMessage({ type: "success", text: response?.data?.message });
               //
-              onGetStockMovements(axiosPrivate, signal).then((result) => {
+              onGetUsers(axiosPrivate, signal).then((result) => {
                 dispatch({
-                  type: "setUpStock/getStockMovements",
-                  payload: result,
-                });
-              });
-              //
-              onGetStocks(axiosPrivate, signal).then((result) => {
-                dispatch({
-                  type: "setUpStock/getStocks",
+                  type: "setUpUser/getUsers",
                   payload: result,
                 });
               });
@@ -202,244 +160,70 @@ const User = () => {
     <div className="users">
       <div className="inner">
         <div className="inner-head">
-          <div className="ih-left">
-            <h2 className="title t-2">Utilisateurs</h2>
-            <p className="title t-3">
-              Gestion des utilisateurs inscrits dans le sytème.
-            </p>
-          </div>
-          <div className="ih-right">
-            <button
-              className={isOperation ? "button active-view" : "button"}
-              onClick={() => setIsOperation(true)}
-            >
-              Opérations
-            </button>
-            <button
-              className={isOperation ? "button" : "button active-view"}
-              onClick={() => setIsOperation(false)}
-            >
-              Stocks
-            </button>
-          </div>
+          <h2 className="title t-2">Utilisateurs</h2>
+          <p className="title t-3">
+            Gestion des utilisateurs inscrits dans le sytème.
+          </p>
         </div>
         <div className="actions">
-          <div className="left">
-            <div className="inputs-form">
-              <select>
-                <option defaultValue={""}>
-                  --- Selectionner un article ---
-                </option>
-                {isEmpty(articles?.data?.articles) ? (
-                  <option
-                    value={""}
-                    style={{ textAlign: "center", color: "gray" }}
-                  >
-                    {articles?.data?.message}
-                  </option>
-                ) : (
-                  articles?.data?.articles?.map((item, _) => {
-                    return <option value={item?.id}>{item?.title}</option>;
-                  })
-                )}
-              </select>
-            </div>
-            <div className="inputs-form">
-              <input type="date" placeholder="Recherche" />
-            </div>
-            <div className="inputs-form">
-              <input type="date" placeholder="Recherche" />
-            </div>
-            <button className="button btn-validate">
-              <BsFilter className="icon" /> Filtrer
-            </button>
-          </div>
-          <div className="right">
-            <button className="button btn-export">
-              <FaFileExport className="icon" /> Exporter
-            </button>
-            {isOperation && (
-              <button className="button btn-new" onClick={() => setOnNew(true)}>
-                <FaPlus className="icon" /> Nouvelle Opération
-              </button>
-            )}
-          </div>
+          {/* <button className="button btn-export">
+            <FaFileExport className="icon" /> Exporter
+          </button> */}
+          <button className="button btn-new" onClick={() => setOnNew(true)}>
+            <FaPlus className="icon" /> Nouvel Utilisateur
+          </button>
         </div>
         <div className="content">
           <div className="table">
             <table>
               <thead>
-                {isOperation ? (
-                  <>
-                    <tr>
-                      <th className="col-05 text-align-center">
-                        <input type="checkbox" />
-                      </th>
-                      <th className="col-2 text-align-left">Date Enreg.</th>
-                      <th className="col-2 text-align-left">Article</th>
-                      <th className="col-2 text-align-left">Opération</th>
-                      <th className="col-1 text-align-center">Quantité</th>
-                      <th className="col-2 text-align-center">Actions</th>
-                    </tr>
-                  </>
-                ) : (
-                  <>
-                    <tr>
-                      <th className="col-05 text-align-center">
-                        <input type="checkbox" />
-                      </th>
-                      <th className="col-2 text-align-left">
-                        Date Dernière Op.
-                      </th>
-                      <th className="col-2 text-align-left">Article</th>
-                      <th className="col-2 text-align-center">
-                        En Stock(Quantité)
-                      </th>
-                      <th className="col-2 text-align-center">Statut</th>
-                    </tr>
-                  </>
-                )}
+                <tr>
+                  <th className="col-05 text-align-center">
+                    <input type="checkbox" />
+                  </th>
+                  <th className="col-2 text-align-left">Date Enreg.</th>
+                  <th className="col-2 text-align-left">Noms</th>
+                  <th className="col-2 text-align-left">E-mail</th>
+                  <th className="col-1 text-align-center">Téléphone</th>
+                  <th className="col-1 text-align-center">Rôle</th>
+                </tr>
               </thead>
               <tbody>
-                {isOperation ? (
-                  <>
-                    {isEmpty(stockMovements?.data?.stockMovements) ? (
-                      <tr>
-                        <td
-                          colSpan={6}
-                          style={{ textAlign: "center", color: "gray" }}
-                        >
-                          {stockMovements?.data?.message}
-                        </td>
-                      </tr>
-                    ) : (
-                      stockMovements?.data?.stockMovements?.map((item, idx) => {
-                        return (
-                          <tr key={idx}>
-                            <td className="col-05 text-align-center">
-                              <input type="checkbox" />
-                            </td>
-                            <td className="col-2 text-align-left">
-                              {moment(item?.dates).format("LLLL")}
-                            </td>
-                            <td className="col-2 text-align-left">
-                              <div className="row">
-                                <img
-                                  src={
-                                    item?.thumbnail
-                                      ? `${process.env.REACT_APP_API_SERVER_URL}:${process.env.REACT_APP_API_SERVER_PORT}/images/${item?.thumbnail}`
-                                      : ASSETS.logo
-                                  }
-                                  alt={item?.thumbnail}
-                                />
-                                <div className="content-details">
-                                  <h2 className="title t-2">
-                                    {item?.article_title}
-                                  </h2>
-                                  <h3 className="title t-3">
-                                    {item?.article_code}
-                                  </h3>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="col-2 text-align-left">
-                              {item?.type}
-                            </td>
-                            <td className="col-1 text-align-center">
-                              {item?.quantity}
-                            </td>
-                            <td className="col-2 text-align-center">
-                              <button
-                                className="button btn-action"
-                                onClick={() => {
-                                  setIsUpdating(true);
-                                  setOnNew(true);
-                                  onUpdate(item);
-                                }}
-                              >
-                                Mise à jour
-                              </button>
-                              <button className="button btn-action">
-                                {item?.status === 1 ? "Annuler" : "Valider"}
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </>
+                {isEmpty(users?.data?.users) ? (
+                  <tr>
+                    <td
+                      colSpan={6}
+                      style={{ textAlign: "center", color: "gray" }}
+                    >
+                      {users?.data?.message}
+                    </td>
+                  </tr>
                 ) : (
-                  <>
-                    {isEmpty(stocks?.data?.articlesStocks) ? (
-                      <tr>
-                        <td
-                          colSpan={6}
-                          style={{ textAlign: "center", color: "gray" }}
-                        >
-                          {stocks?.data?.message}
+                  users?.data?.users?.map((item, idx) => {
+                    return (
+                      <tr key={idx}>
+                        <td className="col-05 text-align-center">
+                          <input type="checkbox" />
+                        </td>
+                        <td className="col-2 text-align-left">
+                          {moment(item?.createdAt).format("LLLL")}
+                        </td>
+                        <td className="col-2 text-align-left">
+                          {capitalize(item?.firstname)}{" "}
+                          {capitalize(item?.lastname)}
+                        </td>
+                        <td className="col-2 text-align-left">
+                          {item?.mail.toLowerCase()}
+                        </td>
+                        <td className="col-1 text-align-center">
+                          {item?.telephone}
+                        </td>
+                        <td className="col-1 text-align-center">
+                          {item?.sys_role}
                         </td>
                       </tr>
-                    ) : (
-                      stocks?.data?.articlesStocks?.map((item, idx) => {
-                        return (
-                          <tr key={idx}>
-                            <td className="col-05 text-align-center">
-                              <input type="checkbox" />
-                            </td>
-                            <td className="col-2 text-align-left">
-                              {moment(item?.dates).format("LLLL")}
-                            </td>
-                            <td className="col-2 text-align-left">
-                              <div className="row">
-                                <img
-                                  src={
-                                    item?.article_thumbnail
-                                      ? `${process.env.REACT_APP_API_SERVER_URL}:${process.env.REACT_APP_API_SERVER_PORT}/images/${item?.article_thumbnail}`
-                                      : ASSETS.logo
-                                  }
-                                  alt={item?.article_thumbnail}
-                                />
-                                <div className="content-details">
-                                  <h2 className="title t-2">
-                                    {item?.article_title}
-                                  </h2>
-                                  <h3 className="title t-3">
-                                    {item?.article_code}
-                                  </h3>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="col-1 text-align-center">
-                              {item?.stockState}
-                            </td>
-                            <td className="col-1 text-align-center">
-                              {item?.stockState === 0 && (
-                                <span className="stock-state out-stock">
-                                  Stock Epuisé
-                                </span>
-                              )}
-                              {item?.stockState > 0 &&
-                                item?.stockState <= item?.article_threshold && (
-                                  <span className="stock-state low-stock">
-                                    Stock Faible
-                                  </span>
-                                )}
-                              {item?.stockState > item?.article_threshold && (
-                                <span className="stock-state in-stock">
-                                  Stock Dispoble
-                                </span>
-                              )}
-                              {item?.stockState < 0 && (
-                                <span className="stock-state critically-low">
-                                  Stock Très Faible
-                                </span>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </>
+                    );
+                  })
                 )}
               </tbody>
             </table>
@@ -465,7 +249,7 @@ const User = () => {
         <div className="outer">
           <div className="wrapper">
             <div className="fp-head">
-              <h3 className="title t-2">Nouvelle Opération</h3>
+              <h3 className="title t-2">Nouvel Utilisateur</h3>
               <span
                 onClick={() => {
                   setOnNew(false);
@@ -481,69 +265,93 @@ const User = () => {
               {isShowingMessage && (
                 <MessageBox type={message.type} text={message.text} />
               )}
-              <div className="input-div">
-                <select className="input-select" {...register("article_id")}>
-                  <option value={""} selected>
-                    --- Selectionner un article ---
-                  </option>
-                  {isEmpty(articles?.data?.articles) ? (
-                    <option
-                      value={""}
-                      style={{ textAlign: "center", color: "gray" }}
-                    >
-                      {articles?.data?.message}
-                    </option>
-                  ) : (
-                    articles?.data?.articles?.map((item, _) => {
-                      return <option value={item?.id}>{item?.title}</option>;
-                    })
+              <div className="row">
+                <div className="input-div">
+                  <input
+                    type="text"
+                    className="input-form"
+                    autoComplete="none"
+                    placeholder=" "
+                    {...register("firstname")}
+                  />
+                  <label htmlFor="firstname" className="label-form">
+                    Prénom
+                  </label>
+                  {errors.firstname && (
+                    <span className="fade-in">{errors.firstname.message}</span>
                   )}
-                </select>
-                {errors.article_id && (
-                  <span className="fade-in">{errors.article_id.message}</span>
-                )}
+                </div>
+                <div className="input-div">
+                  <input
+                    type="text"
+                    className="input-form"
+                    autoComplete="none"
+                    placeholder=" "
+                    {...register("lastname")}
+                  />
+                  <label htmlFor="lastname" className="label-form">
+                    Nom
+                  </label>
+                  {errors.lastname && (
+                    <span className="fade-in">{errors.lastname.message}</span>
+                  )}
+                </div>
               </div>
               <div className="input-div">
-                <select className="input-select" {...register("type")}>
+                <select className="input-select" {...register("gender")}>
                   <option value={""} selected>
-                    --- Type d'Opération ---
+                    --- Genre ---
                   </option>
-                  <option value={"entrée"}>Entrée en Stock</option>
-                  <option value={"sortie"}>Sortie en Stock</option>
+                  <option value={"femme"}>Femme</option>
+                  <option value={"homme"}>Homme</option>
                 </select>
-                {errors.type && (
-                  <span className="fade-in">{errors.type.message}</span>
+                {errors.gender && (
+                  <span className="fade-in">{errors.gender.message}</span>
                 )}
               </div>
-              <div className="input-div">
-                <input
-                  type="number"
-                  className="input-form"
-                  autoComplete="none"
-                  placeholder=" "
-                  {...register("quantity")}
-                />
-                <label htmlFor="quantity" className="label-form">
-                  Quantitée
-                </label>
-                {errors.quantity && (
-                  <span className="fade-in">{errors.quantity.message}</span>
-                )}
+              <div className="row">
+                <div className="input-div">
+                  <input
+                    type="text"
+                    className="input-form"
+                    autoComplete="none"
+                    placeholder=" "
+                    {...register("telephone")}
+                  />
+                  <label htmlFor="telephone" className="label-form">
+                    Téléphone
+                  </label>
+                  {errors.telephone && (
+                    <span className="fade-in">{errors.telephone.message}</span>
+                  )}
+                </div>
+                <div className="input-div">
+                  <input
+                    type="text"
+                    className="input-form"
+                    autoComplete="none"
+                    placeholder=" "
+                    {...register("mail")}
+                  />
+                  <label htmlFor="mail" className="label-form">
+                    E-mail
+                  </label>
+                  {errors.mail && (
+                    <span className="fade-in">{errors.mail.message}</span>
+                  )}
+                </div>
               </div>
               <div className="input-div">
-                <textarea
-                  type="text"
-                  className="input-textarea"
-                  autoComplete="none"
-                  placeholder=" "
-                  rows={10}
-                  {...register("description")}
-                />
-                <label htmlFor="description" className="label-form">
-                  Description
-                </label>
-                {errors.description && (
-                  <span className="fade-in">{errors.description.message}</span>
+                <select className="input-select" {...register("sys_role")}>
+                  <option value={""} selected>
+                    --- Rôle ---
+                  </option>
+                  <option value={"admin"}>Admin</option>
+                  <option value={"manager"}>Gerant</option>
+                  <option value={"seller"}>Vendeur</option>
+                </select>
+                {errors.sys_role && (
+                  <span className="fade-in">{errors.sys_role.message}</span>
                 )}
               </div>
               <button type="submit" className="button">

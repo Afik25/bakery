@@ -38,3 +38,25 @@ export function login(data) {
       });
   });
 }
+// changing password
+export function onChangingPassword(axiosPrivate, data) {
+  const formData = {
+    old_password: data?.old_password,
+    new_password: data?.new_password,
+    user_id: data?.user_id,
+  };
+  //
+  return new Promise(async (resolve, reject) => {
+    await axiosPrivate
+      .post(LOGINS + "/change/password", formData, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      })
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}

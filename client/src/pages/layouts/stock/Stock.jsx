@@ -240,7 +240,7 @@ const Stock = () => {
                   </option>
                 ) : (
                   articles?.data?.articles?.map((item, _) => {
-                    return <option value={item?.id}>{item?.title}</option>;
+                    return <option value={item?.id} key={item?.id}>{item?.title}</option>;
                   })
                 )}
               </select>

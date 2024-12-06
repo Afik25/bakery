@@ -16,18 +16,25 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
 import {
   isEmpty,
+  capitalize,
   wait,
   validationSchemaOnAddToBasket,
   validationSchemaOrder,
 } from "../../../utils/utils";
 import { onGetArticles } from "../../../services/configuration";
 import { onGetStocksByArticleId } from "../../../services/stock";
-import { onCreateOrder, onGetOrders } from "../../../services/order";
+import {
+  onCreateOrder,
+  onGetOrders,
+  onGetOrdersByKeys,
+  onGetOrdersByCode,
+} from "../../../services/order";
+import { onGetUsers } from "../../../services/user";
 import useAxiosPrivate from "../../../hooks/context/state/useAxiosPrivate";
 import MessageBox from "../../../components/msgBox/MessageBox";
 import moment from "moment";
-import ASSETS from "../../../utils/Assets";
 //
+import Loader from "../../../components/loader/Loader";
 import "moment/locale/fr";
 moment.locale("fr");
 
@@ -36,6 +43,7 @@ const Orders = () => {
   const axiosPrivate = useAxiosPrivate();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [ordersArray, setOrdersArray] = useState([]);
   const [isFirstStep, setIsFirstStep] = useState(true);
   const [isSending, setIsSending] = useState(false);
   const [isShowingMessage, setIsShowingMessage] = useState(false);
@@ -48,6 +56,24 @@ const Orders = () => {
   const [discountAmount, setDiscountAmount] = useState(0.0);
   const [isOrderDiscount, setIsOrderDiscount] = useState("percent");
   const [discountOrderAmount, setDiscountOrderAmount] = useState(0.0);
+  // Actions
+  const [selectedOrders, setSelectedOrders] = useState([]);
+  const [orderCode, setOrderCode] = useState("");
+  const [_ordersGroupedStatus, setOrdersGroupedStatus] = useState({
+    delivered: 0,
+    approved: 0,
+    pending: 0,
+    canceled: 0,
+  });
+  const [isFiltering, setIsFiltering] = useState(false);
+  //
+  var dateNow = new Date().toISOString().slice(0, 10);
+  const [currentFilter, setCurrentFilter] = useState({
+    user: "",
+    start: dateNow,
+    end: dateNow,
+    status: "",
+  });
 
   useEffect(() => {
     let isMounted = true;
@@ -74,6 +100,60 @@ const Orders = () => {
     };
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    connectedUser?.userInfo?.sys_role === "admin" &&
+      onGetUsers(axiosPrivate, signal).then((result) => {
+        dispatch({
+          type: "setUpUser/getUsers",
+          payload: result,
+        });
+      });
+
+    return () => {
+      isMounted = false;
+      isMounted && controller.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    let ordersFilter = orders?.data?.orders?.filter(
+      (_order) =>
+        parseInt(_order.user_id) ===
+          parseInt(connectedUser?.userInfo?.user_id) || _order.user_id == null
+    );
+    const reversed = ordersFilter?.reverse();
+    //
+    setOrdersArray(reversed);
+    //
+    const groupedStatus = Object.groupBy(
+      reversed || [],
+      ({ status }) => status
+    );
+    const groupedKeys = Object.keys(groupedStatus);
+    //
+    let _deliv = 0;
+    let _appr = 0;
+    let _pend = 0;
+    let _canc = 0;
+    for (let j = 0; j < groupedKeys.length; j++) {
+      const element = groupedKeys[j];
+      if (element === "delivered") _deliv = groupedStatus[element]?.length;
+      if (element === "approved") _appr = groupedStatus[element]?.length;
+      if (element === "pending") _pend = groupedStatus[element]?.length;
+      if (element === "canceled") _canc = groupedStatus[element]?.length;
+    }
+    setOrdersGroupedStatus({
+      delivered: _deliv,
+      approved: _appr,
+      pending: _pend,
+      canceled: _canc,
+    });
+  }, []);
+
   const connectedUser = useSelector(
     (state) => state.setInitConf.initConnectedUser.connectedUserData
   );
@@ -84,6 +164,10 @@ const Orders = () => {
 
   const orders = useSelector(
     (state) => state.setOrderSlice?.initOrders?.ordersData
+  );
+
+  const users = useSelector(
+    (state) => state.setUserSlice?.initUsers?.usersData
   );
 
   const {
@@ -104,6 +188,27 @@ const Orders = () => {
       article_threshold: "",
       discount: 0,
       discount_type: "percent",
+    },
+  });
+
+  const {
+    register: register2,
+    handleSubmit: handleSubmit2,
+    setValue: setValue2,
+    getValues: getValues2,
+    reset: reset2,
+    formState: { errors: errors2 },
+  } = useForm({
+    mode: "all",
+    resolver: yupResolver(validationSchemaOrder),
+    defaultValues: {
+      user_id: connectedUser?.userInfo?.user_id,
+      order_dates: "",
+      order_discount: 0,
+      order_discount_type: isOrderDiscount,
+      order_pay_mode: "",
+      order_status: "",
+      customer: "Anonyme",
     },
   });
 
@@ -149,7 +254,6 @@ const Orders = () => {
       return () => clearTimeout(timer);
     }
   };
-
   const onUpdate = (item, i) => {
     setValue("article_id", item?.article_id);
     setValue("article_code", item?.article_code);
@@ -165,7 +269,6 @@ const Orders = () => {
       return newBaskets;
     });
   };
-
   const onRemove = (i) => {
     setBasket((prevState) => {
       const newBaskets = [...prevState];
@@ -174,26 +277,160 @@ const Orders = () => {
     });
   };
 
-  const {
-    register: register2,
-    handleSubmit: handleSubmit2,
-    setValue: setValue2,
-    getValues: getValues2,
-    reset: reset2,
-    formState: { errors: errors2 },
-  } = useForm({
-    mode: "all",
-    resolver: yupResolver(validationSchemaOrder),
-    defaultValues: {
-      user_id: connectedUser?.userInfo?.user_id,
-      order_dates: "",
-      order_discount: 0,
-      order_discount_type: isOrderDiscount,
-      order_pay_mode: "",
-      order_status: "",
-      customer: "Anonyme",
-    },
-  });
+  const onChangeOrderCode = (e) => {
+    setOrderCode(e?.target?.value);
+  };
+  const onSelectedUser = (e) => {
+    setCurrentFilter({
+      user: parseInt(e?.target?.value),
+      start: currentFilter?.start,
+      end: currentFilter?.end,
+      status: currentFilter?.status,
+    });
+  };
+  const onSelectedStatus = (e) => {
+    setCurrentFilter({
+      user: currentFilter?.user,
+      start: currentFilter?.start,
+      end: currentFilter?.end,
+      status: e?.target?.value,
+    });
+  };
+  const onChangeDate = (e) => {
+    const component = e?.target?.id;
+    setCurrentFilter({
+      start: component === "start" ? e?.target?.value : currentFilter?.start,
+      end: component === "end" ? e?.target?.value : currentFilter?.end,
+    });
+  };
+  const onOrdersFilterByKeys = async () => {
+    setIsFiltering(true);
+    await wait(500);
+    //
+    let isMounted = true;
+    const controller = new AbortController();
+    const signal = controller.signal;
+    //
+    const data = {
+      user_id: isEmpty(currentFilter?.user)
+        ? parseInt(connectedUser?.userInfo?.user_id)
+        : parseInt(currentFilter?.user),
+      start: currentFilter?.start,
+      end: currentFilter?.end,
+      status: currentFilter?.status,
+    };
+    //
+    await onGetOrdersByKeys(axiosPrivate, signal, data).then((result) => {
+      let ordersFilter = result?.data?.orders?.filter(
+        (_order) =>
+          parseInt(_order.user_id) ===
+            parseInt(
+              isEmpty(currentFilter?.user)
+                ? parseInt(data?.user_id)
+                : parseInt(currentFilter?.user)
+            ) || _order.user_id == null
+      );
+      const reversed = ordersFilter?.reverse();
+      setOrdersArray(reversed);
+      //
+      const groupedStatus = Object.groupBy(
+        reversed || [],
+        ({ status }) => status
+      );
+      const groupedKeys = Object.keys(groupedStatus);
+      //
+      let _deliv = 0;
+      let _appr = 0;
+      let _pend = 0;
+      let _canc = 0;
+      for (let j = 0; j < groupedKeys.length; j++) {
+        const element = groupedKeys[j];
+        if (element === "delivered") _deliv = groupedStatus[element]?.length;
+        if (element === "approved") _appr = groupedStatus[element]?.length;
+        if (element === "pending") _pend = groupedStatus[element]?.length;
+        if (element === "canceled") _canc = groupedStatus[element]?.length;
+      }
+      setOrdersGroupedStatus({
+        delivered: _deliv,
+        approved: _appr,
+        pending: _pend,
+        canceled: _canc,
+      });
+      //
+      dispatch({
+        type: "setUpOrder/getOrders",
+        payload: result,
+      });
+      setIsFiltering(false);
+    });
+    //
+    return () => {
+      isMounted = false;
+      isMounted && controller.abort();
+    };
+  };
+  const onOrdersFilterByCode = async () => {
+    setIsFiltering(true);
+    await wait(500);
+    //
+    let isMounted = true;
+    const controller = new AbortController();
+    const signal = controller.signal;
+    //
+    const data = {
+      user_id: parseInt(connectedUser?.userInfo?.user_id),
+      code: orderCode,
+    };
+    //
+    await onGetOrdersByCode(axiosPrivate, signal, data).then((result) => {
+      let ordersFilter = result?.data?.orders?.filter(
+        (_order) =>
+          parseInt(_order.user_id) ===
+            parseInt(
+              isEmpty(currentFilter?.user)
+                ? parseInt(data?.user_id)
+                : parseInt(currentFilter?.user)
+            ) || _order.user_id == null
+      );
+      const reversed = ordersFilter?.reverse();
+      setOrdersArray(reversed);
+      //
+      const groupedStatus = Object.groupBy(
+        reversed || [],
+        ({ status }) => status
+      );
+      const groupedKeys = Object.keys(groupedStatus);
+      //
+      let _deliv = 0;
+      let _appr = 0;
+      let _pend = 0;
+      let _canc = 0;
+      for (let j = 0; j < groupedKeys.length; j++) {
+        const element = groupedKeys[j];
+        if (element === "delivered") _deliv = groupedStatus[element]?.length;
+        if (element === "approved") _appr = groupedStatus[element]?.length;
+        if (element === "pending") _pend = groupedStatus[element]?.length;
+        if (element === "canceled") _canc = groupedStatus[element]?.length;
+      }
+      setOrdersGroupedStatus({
+        delivered: _deliv,
+        approved: _appr,
+        pending: _pend,
+        canceled: _canc,
+      });
+      //
+      dispatch({
+        type: "setUpOrder/getOrders",
+        payload: result,
+      });
+      setIsFiltering(false);
+    });
+    //
+    return () => {
+      isMounted = false;
+      isMounted && controller.abort();
+    };
+  };
 
   const onSubmit = async (data) => {
     let _totalAmount = 0;
@@ -235,6 +472,40 @@ const Orders = () => {
         }
         //
         onGetOrders(axiosPrivate, signal).then((result) => {
+          let ordersFilter = result?.data?.orders?.filter(
+            (_order) =>
+              parseInt(_order.user_id) ===
+                parseInt(connectedUser?.userInfo?.user_id) ||
+              _order.user_id == null
+          );
+          const reversed = ordersFilter?.reverse();
+          setOrdersArray(reversed);
+          //
+          const groupedStatus = Object.groupBy(
+            reversed || [],
+            ({ status }) => status
+          );
+          const groupedKeys = Object.keys(groupedStatus);
+          //
+          let _deliv = 0;
+          let _appr = 0;
+          let _pend = 0;
+          let _canc = 0;
+          for (let j = 0; j < groupedKeys.length; j++) {
+            const element = groupedKeys[j];
+            if (element === "delivered")
+              _deliv = groupedStatus[element]?.length;
+            if (element === "approved") _appr = groupedStatus[element]?.length;
+            if (element === "pending") _pend = groupedStatus[element]?.length;
+            if (element === "canceled") _canc = groupedStatus[element]?.length;
+          }
+          setOrdersGroupedStatus({
+            delivered: _deliv,
+            approved: _appr,
+            pending: _pend,
+            canceled: _canc,
+          });
+          //
           dispatch({
             type: "setUpOrder/getOrders",
             payload: result,
@@ -278,32 +549,107 @@ const Orders = () => {
   return (
     <div className="orders">
       <div className="inner">
-        <h2 className="title t-1">
-          Commande <span>({orders?.data?.orders?.length} commandes)</span>
-        </h2>
+        <div className="header-line">
+          <h2 className="title t-1">
+            Commande <span>({ordersArray?.length} commandes)</span>
+          </h2>
+          <div className="statistics">
+            <div className="stat-item">
+              <span>Commandes Livrées</span>
+              <h2 className="title t-2">{_ordersGroupedStatus?.delivered}</h2>
+            </div>
+            <div className="stat-item">
+              <span>Commandes Approuvées</span>
+              <h2 className="title t-2">{_ordersGroupedStatus?.approved}</h2>
+            </div>
+            <div className="stat-item">
+              <span>Commandes En attente</span>
+              <h2 className="title t-2">{_ordersGroupedStatus?.pending}</h2>
+            </div>
+            <div className="stat-item">
+              <span>Commandes Annulées</span>
+              <h2 className="title t-2">{_ordersGroupedStatus?.canceled}</h2>
+            </div>
+          </div>
+        </div>
         <div className="actions">
           <div className="left">
             <div className="inputs-form">
               <BsSearch className="icon" />
-              <input type="text" placeholder="Recherche" />
+              <input
+                type="text"
+                placeholder="Recherche par code"
+                onChange={(e) => onChangeOrderCode(e)}
+              />
             </div>
-            <button className="button btn-validate">
+            <button
+              className="button btn-validate"
+              onClick={() => onOrdersFilterByCode()}
+            >
               <BsFilter className="icon" /> Filtrer
             </button>
-            <select>
+          </div>
+          <div className="middle">
+            {connectedUser?.userInfo?.sys_role !== "user" && (
+              <select onChange={(e) => onSelectedUser(e)}>
+                <option value={""}>All users</option>
+                {isEmpty(users?.data?.users) ? (
+                  <option value={""}>{users?.data?.message}</option>
+                ) : (
+                  users?.data?.users?.map((item, idx) => {
+                    return (
+                      <option key={idx} value={item?.id}>
+                        {capitalize(item?.firstname)}{" "}
+                        {capitalize(item?.lastname)}
+                      </option>
+                    );
+                  })
+                )}
+              </select>
+            )}
+            <div className="inputs-form">
+              <input
+                id="start"
+                type="date"
+                placeholder="Recherche"
+                value={currentFilter?.start}
+                onChange={onChangeDate}
+              />
+            </div>
+            <div className="inputs-form">
+              <input
+                id="end"
+                type="date"
+                placeholder="Recherche"
+                value={currentFilter?.end}
+                onChange={onChangeDate}
+              />
+            </div>
+            <select onChange={(e) => onSelectedStatus(e)}>
               <option value={""}>Statut commande</option>
-              <option value={"validate"}>Validée</option>
+              <option value={"delivered"}>Délivrée</option>
+              <option value={"approved"}>Approuvée</option>
               <option value={"pending"}>En attente</option>
               <option value={"canceled"}>Annulée</option>
             </select>
+            <button
+              className="button btn-validate"
+              onClick={() => onOrdersFilterByKeys()}
+            >
+              <BsFilter className="icon" /> Filtrer
+            </button>
           </div>
           <div className="right">
-            <button className="button btn-validate">
-              <GrValidate className="icon" /> Valider
-            </button>
-            <button className="button btn-canceled">
-              <MdOutlineCancel className="icon" /> Annuler
-            </button>
+            {!isEmpty(selectedOrders) && (
+              <>
+                <button className="button btn-validate">
+                  <GrValidate className="icon" /> Valider
+                </button>
+                <button className="button btn-canceled">
+                  <MdOutlineCancel className="icon" /> Annuler
+                </button>
+              </>
+            )}
             <button className="button btn-export">
               <FaFileExport className="icon" /> Exporter
             </button>
@@ -313,106 +659,116 @@ const Orders = () => {
           </div>
         </div>
         <div className="content">
-          <div className="table">
-            <table>
-              <thead>
-                <tr>
-                  <th className="col-05 text-align-center">
-                    <input type="checkbox" />
-                  </th>
-                  <th className="col-2 text-align-left">Date</th>
-                  <th className="col-1 text-align-left">Numéro Commande</th>
-                  <th className="col-3 text-align-left">Client</th>
-                  <th className="col-1 text-align-center">Nombre d'articles</th>
-                  <th className="col-05 text-align-center">Quantité</th>
-                  <th className="col-1 text-align-center">Total (CDF)</th>
-                  <th className="col-05 text-align-center">Statut</th>
-                  <th className="col-1 text-align-center">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {isEmpty(orders?.data?.orders) ? (
+          <div className="content-inner">
+            <div className="table">
+              <table>
+                <thead>
                   <tr>
-                    <td
-                      colSpan={9}
-                      style={{ textAlign: "center", color: "gray" }}
-                    >
-                      {orders?.data?.message}
-                    </td>
+                    <th className="col-05 text-align-center">
+                      <input type="checkbox" />
+                    </th>
+                    <th className="col-2 text-align-left">Date</th>
+                    <th className="col-1 text-align-left">Numéro Commande</th>
+                    <th className="col-3 text-align-left">Client</th>
+                    <th className="col-1 text-align-center">
+                      Nombre d'articles
+                    </th>
+                    <th className="col-05 text-align-center">Quantité</th>
+                    <th className="col-1 text-align-center">Total (CDF)</th>
+                    <th className="col-05 text-align-center">Statut</th>
+                    <th className="col-1 text-align-center">Actions</th>
                   </tr>
-                ) : (
-                  orders?.data?.orders?.map((item, idx) => {
-                    return (
-                      <tr key={idx}>
-                        <td className="col-05 text-align-center">
-                          <input type="checkbox" />
-                        </td>
-                        <td className="col-2 text-align-left">
-                          {moment(item?.dates).format("LLLL")}
-                        </td>
-                        <td className="col-1 text-align-left">{item?.code}</td>
-                        <td className="col-3 text-align-left">
-                          {item?.customer}
-                        </td>
-                        <td className="col-1 text-align-center">
-                          {item?.detailsOrder.length}
-                        </td>
-                        <td className="col-05 text-align-center">
-                          {item?.total_quantity}
-                        </td>
-                        <td className="col-1 text-align-center">
-                          {parseInt(item?.pay_from_discount).toFixed(2)}
-                        </td>
-                        <td className="col-05 text-align-center">
-                          {item?.status === "delivered" && (
-                            <span className="status completed">Livrée</span>
-                          )}
-                          {item?.status === "approved" && (
-                            <span className="status validate">Approuvée</span>
-                          )}
-                          {item?.status === "canceled" && (
-                            <span className="status canceled">Annulée</span>
-                          )}
-                          {item?.status === "pending" && (
-                            <span className="status pending">En attente</span>
-                          )}
-                        </td>
-                        <td className="col-1 text-align-center">
-                          <button
-                            className="button btn-action"
-                            onClick={() =>
-                              navigate(`/admin/orders/${item?.code}/details`, {
-                                state: {
-                                  item: item,
-                                },
-                              })
-                            }
-                          >
-                            Details
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
-          <div className="pagination">
-            <div className="p-left">
-              <select>
-                <option value={5}>5 lignes</option>
-                <option value={10}>10 lignes</option>
-                <option value={15}>15 lignes</option>
-                <option value={20}>20 lignes</option>
-              </select>
-              <span>1-5 de 50 resultats</span>
+                </thead>
+                <tbody>
+                  {isEmpty(ordersArray) ? (
+                    <tr>
+                      <td
+                        colSpan={9}
+                        style={{ textAlign: "center", color: "gray" }}
+                      >
+                        Aucune commande n'est encore prise!
+                      </td>
+                    </tr>
+                  ) : (
+                    ordersArray?.map((item, idx) => {
+                      return (
+                        <tr key={idx}>
+                          <td className="col-05 text-align-center">
+                            <input type="checkbox" />
+                          </td>
+                          <td className="col-2 text-align-left">
+                            {moment(item?.dates).format("LLLL")}
+                          </td>
+                          <td className="col-1 text-align-left">
+                            {item?.code}
+                          </td>
+                          <td className="col-3 text-align-left">
+                            {item?.customer}
+                          </td>
+                          <td className="col-1 text-align-center">
+                            {item?.detailsOrder.length}
+                          </td>
+                          <td className="col-05 text-align-center">
+                            {item?.total_quantity}
+                          </td>
+                          <td className="col-1 text-align-center">
+                            {parseInt(item?.pay_from_discount).toFixed(2)}
+                          </td>
+                          <td className="col-05 text-align-center">
+                            {item?.status === "delivered" && (
+                              <span className="status completed">Livrée</span>
+                            )}
+                            {item?.status === "approved" && (
+                              <span className="status validate">Approuvée</span>
+                            )}
+                            {item?.status === "canceled" && (
+                              <span className="status canceled">Annulée</span>
+                            )}
+                            {item?.status === "pending" && (
+                              <span className="status pending">En attente</span>
+                            )}
+                          </td>
+                          <td className="col-1 text-align-center">
+                            <button
+                              className="button btn-action"
+                              onClick={() =>
+                                navigate(
+                                  `/admin/orders/${item?.code}/details`,
+                                  {
+                                    state: {
+                                      item: item,
+                                    },
+                                  }
+                                )
+                              }
+                            >
+                              Details
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
             </div>
-            <div className="p-right">
-              <button className="button btn-previous">Précedent</button>
-              <button className="button btn-next">Suivant</button>
+            <div className="pagination">
+              <div className="p-left">
+                <select>
+                  <option value={5}>5 lignes</option>
+                  <option value={10}>10 lignes</option>
+                  <option value={15}>15 lignes</option>
+                  <option value={20}>20 lignes</option>
+                </select>
+                <span>1-5 de 50 resultats</span>
+              </div>
+              <div className="p-right">
+                <button className="button btn-previous">Précedent</button>
+                <button className="button btn-next">Suivant</button>
+              </div>
             </div>
           </div>
+          {isFiltering && <div className="content-outer"><Loader/></div>}
         </div>
       </div>
       {onNew && (

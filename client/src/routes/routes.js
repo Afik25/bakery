@@ -8,6 +8,11 @@ import Order from "../pages/order/Order";
 import Login from "../pages/authentication/Login";
 import Register from "../pages/authentication/Register";
 import Administration from "../pages/users/admin/Administration";
+import About from "../pages/about/About";
+import Product from "../pages/product/Product";
+import Communion from "../pages/communion/Communion";
+import Contact from "../pages/contact/Contact";
+import Loader from "../components/loader/Loader";
 //
 import Dashboard from "../pages/layouts/dashboard/Dashboard";
 import Orders from "../pages/layouts/orders/Orders";
@@ -26,6 +31,7 @@ import Unauthorized from "../pages/Unauthorized";
 
 const ROLES = {
   admin: "admin",
+  manager: "manager",
   user: "user",
 };
 
@@ -34,14 +40,19 @@ export const routes = [
     element: <MainLayout />,
     children: [
       { path: "/", element: <Home /> },
+      { path: "/loader", element: <Loader /> },
       { path: "/sign-in", element: <Login /> },
       { path: "/sign-up", element: <Register /> },
+      { path: "/about", element: <About /> },
+      { path: "/products", element: <Product /> },
+      { path: "/communion", element: <Communion /> },
+      { path: "/contacts", element: <Contact /> },
       { path: "/order", element: <Order /> },
       {
         element: <PersistLogin />,
         children: [
           {
-            element: <RequireAuth allowedRoles={[ROLES.admin, ROLES.user]} />,
+            element: <RequireAuth allowedRoles={[ROLES.admin]} />,
             children: [
               {
                 path: "/admin",
@@ -63,6 +74,65 @@ export const routes = [
                       { path: "categories", element: <Category /> },
                       { path: "profile", element: <Profile /> },
                     ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        element: <PersistLogin />,
+        children: [
+          {
+            element: <RequireAuth allowedRoles={[ROLES.manager]} />,
+            children: [
+              {
+                path: "/manager",
+                element: <Administration />,
+                children: [
+                  { path: "/manager", element: <Orders /> },
+                  { path: "orders", element: <Orders /> },
+                  {
+                    path: "orders/:order_code/details",
+                    element: <OrderDetails />,
+                  },
+                  { path: "stocks", element: <Stock /> },
+                  { path: "users", element: <User /> },
+                  {
+                    path: "configuration",
+                    element: <Configuration />,
+                    children: [
+                      { index: true, element: <Article /> },
+                      { path: "categories", element: <Category /> },
+                      { path: "profile", element: <Profile /> },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        element: <PersistLogin />,
+        children: [
+          {
+            element: <RequireAuth allowedRoles={[ROLES.user]} />,
+            children: [
+              {
+                path: "/user",
+                element: <Administration />,
+                children: [
+                  { path: "/user", element: <Orders /> },
+                  {
+                    path: "orders/:order_code/details",
+                    element: <OrderDetails />,
+                  },
+                  {
+                    path: "configuration",
+                    element: <Configuration />,
+                    children: [{ index: true, element: <Profile /> }],
                   },
                 ],
               },

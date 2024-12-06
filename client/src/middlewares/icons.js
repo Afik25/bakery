@@ -1,4 +1,4 @@
-import { BiEnvelope } from "react-icons/bi";
+import { BiEnvelope, BiSolidOffer } from "react-icons/bi";
 import {
   BsBasket,
   BsEye,
@@ -7,6 +7,7 @@ import {
   BsSearch,
   BsInfoCircle,
   BsCheckCircle,
+  BsDashCircleDotted,
 } from "react-icons/bs";
 import {
   FaShoppingBasket,
@@ -14,12 +15,21 @@ import {
   FaStar,
   FaRegStar,
   FaPlus,
+  FaMinus,
   FaFileExport,
   FaFileImage,
   FaTrashAlt,
   FaEdit,
   FaArrowLeft,
+  FaFacebook,
+  FaLinkedin,
+  FaTwitter,
+  FaInstagram,
+  FaUniregistry,
+  FaFirstOrderAlt,
 } from "react-icons/fa";
+import { FaMapLocationDot } from "react-icons/fa6";
+import { FcAdvertising } from "react-icons/fc";
 import {
   FiLogOut,
   FiUsers,
@@ -27,7 +37,7 @@ import {
   FiBarChart2,
   FiShoppingBag,
 } from "react-icons/fi";
-import { GrDeliver, GrValidate } from "react-icons/gr";
+import { GrValidate, GrScheduleNew, GrProductHunt } from "react-icons/gr";
 import { GoAlert } from "react-icons/go";
 import {
   IoNotificationsOutline,
@@ -35,15 +45,23 @@ import {
   IoCubeOutline,
   IoCheckmarkCircleOutline,
   IoFilterSharp,
+  IoBagCheckOutline,
 } from "react-icons/io5";
 import {
   MdMenu,
   MdOutlineDashboard,
   MdOutlineCancel,
   MdOutlineErrorOutline,
+  MdSwitchAccessShortcutAdd,
+  MdOutlineBorderColor,
+  MdConnectWithoutContact,
+  MdClose,
 } from "react-icons/md";
+import { CgCommunity } from "react-icons/cg";
+import { TbLayersDifference } from "react-icons/tb";
+import { SiVega, SiElement, SiPicpay } from "react-icons/si";
 
-export { BiEnvelope };
+export { BiEnvelope, BiSolidOffer };
 export {
   BsBasket,
   BsEye,
@@ -52,6 +70,7 @@ export {
   BsSearch,
   BsInfoCircle,
   BsCheckCircle,
+  BsDashCircleDotted,
 };
 export {
   FaShoppingBasket,
@@ -59,14 +78,23 @@ export {
   FaStar,
   FaRegStar,
   FaPlus,
+  FaMinus,
   FaFileExport,
   FaFileImage,
   FaTrashAlt,
   FaEdit,
   FaArrowLeft,
+  FaFacebook,
+  FaLinkedin,
+  FaTwitter,
+  FaInstagram,
+  FaUniregistry,
+  FaFirstOrderAlt,
 };
+export { FaMapLocationDot };
+export { FcAdvertising };
 export { FiLogOut, FiUsers, FiPackage, FiBarChart2, FiShoppingBag };
-export { GrDeliver, GrValidate };
+export { GrValidate, GrScheduleNew, GrProductHunt };
 export { GoAlert };
 export {
   IoNotificationsOutline,
@@ -74,5 +102,18 @@ export {
   IoCubeOutline,
   IoCheckmarkCircleOutline,
   IoFilterSharp,
+  IoBagCheckOutline,
 };
-export { MdMenu, MdOutlineDashboard, MdOutlineCancel, MdOutlineErrorOutline };
+export {
+  MdMenu,
+  MdOutlineDashboard,
+  MdOutlineCancel,
+  MdOutlineErrorOutline,
+  MdSwitchAccessShortcutAdd,
+  MdOutlineBorderColor,
+  MdConnectWithoutContact,
+  MdClose,
+};
+export { CgCommunity };
+export { TbLayersDifference };
+export { SiVega, SiElement, SiPicpay };

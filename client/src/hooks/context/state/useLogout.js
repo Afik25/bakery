@@ -6,14 +6,17 @@ const useLogout = () => {
   const { setAuth } = useAuth();
 
   const logout = async () => {
-    setAuth({});
     try {
       const dates = new Date();
       const data = { updated_at: dates };
-      const response = await axiosPrivate.get(LOGOUT, data, {
-        withCredentials: true,
-      });
-      console.log({ "response from server token trouvé ": response?.data });
+      await axiosPrivate.get(
+        LOGOUT,
+        { params: data },
+        {
+          withCredentials: true,
+        }
+      );
+      setAuth({});
     } catch (error) {
       console.log(error);
     }

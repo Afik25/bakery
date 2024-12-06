@@ -93,7 +93,7 @@ module.exports = {
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
-          expiresIn: "5m",
+          expiresIn: "1m",
         }
       );
 
@@ -111,24 +111,28 @@ module.exports = {
       });
     } catch (error) {
       console.log({ "Error login user ": error });
+      return res.status(400).json({
+        status: false,
+        message:
+          "Error login user: verification de compte utilisateur n'a pas aboutie.",
+      });
     }
   },
   async refreshToken(req, res) {
     try {
-      const cookies = req.cookies;
+      const cookies = req?.cookies;
       if (!cookies?.jwt) return res.sendStatus(401);
-      console.log({ "Cookies verify ": cookies.jwt });
+      // console.log({ "Cookies verify ": cookies.jwt });
 
       const refreshToken = cookies?.jwt;
       const connected = await Login.findOne({
         where: { refresh_token: refreshToken },
       });
-
-      console.log({ "connected user verify ": connected });
+      // console.log({ "connected user verify ": connected });
 
       if (!connected) {
         return res.status(400).json({
-          status: 0,
+          status: false,
           isLogged: false,
           message: "This connexion doesn't exists. Unknown token.",
         });
@@ -138,7 +142,7 @@ module.exports = {
         refreshToken,
         process.env.REFRESH_TOKEN_SECRET,
         (err, decoded) => {
-          console.log({ "connected user verify ": decoded.userInfo });
+          // console.log({ "connected user verify ": decoded.userInfo });
           if (err || connected.user_id !== decoded.userInfo.user_id)
             return res.sendStatus(403);
 
@@ -166,77 +170,82 @@ module.exports = {
       );
     } catch (error) {
       console.log({ "catch error refresh token ": error });
+      return res.status(400).json({
+        status: false,
+        message:
+          "Error Refresh Token : Processus de renouvellement de token utilisateur n'a pas aboutie.",
+      });
     }
   },
   async logout(req, res) {
     try {
+      const { updated_at } = req.query;
       const cookies = req.cookies;
-
-      console.log({ "cookies jwt": cookies.jwt });
 
       if (!cookies?.jwt) return res.sendStatus(204); //No content
       const refreshToken = cookies.jwt;
 
-      //It refreshToken id database ?
       const connected = await Login.findOne({
         where: { refresh_token: refreshToken },
       });
-
       if (connected) {
-        // Desactivate or Delete refreshToken in database
-
-        const logout = await Login.update(
+        await Login.update(
           { connection_status: 0 },
-          { where: { refresh_token: refreshToken } }
+          { where: { refresh_token: refreshToken, updated_at: updated_at } }
         );
-        //
-        // res.clearCookie("jwt", { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
-        //return res.sendStatus(204);
+        res.clearCookie("jwt", {
+          httpOnly: true,
+          sameSite: "None",
+          secure: true,
+        });
         return res.status(204).json({
-          status: 0,
+          status: true,
           isLogged: false,
-          message: "Déconnexion réussie!",
-          logout,
+          message: "Logout process successfully done!",
         });
       }
     } catch (error) {
       console.log({ "catch error logout ": error });
+      return res.status(400).json({
+        status: false,
+        isLogged: false,
+        message: "Error Logout Process",
+      });
     }
   },
-  async verifyAccount(req, res) {
+  async changePassword(req, res) {
     try {
-      const { phone } = req.params;
+      const { old_password, new_password, user_id } = req.body;
 
-      const user = await User.findOne({ where: { telephone: phone } });
+      const user = await User.findOne({
+        where: { id: user_id },
+      });
 
-      if (!user) {
+      if (!bcrypt.compareSync(old_password, user.password)) {
         return res.status(400).json({
-          status: 0,
-          message: "Ce numéro renseigné n'est pas reconnu.",
+          status: false,
+          message: "L'ancien mot de passe est invalide.",
         });
       }
-      return res
-        .status(200)
-        .json({ status: 1, message: "Numéro reconnu.", user });
-    } catch (error) {
-      console.log({ "catch error verify account ": error });
-    }
-  },
-  async restorePassword(req, res) {
-    try {
-      const { password } = req.body;
-      const { user_id } = req.params;
-      const passwordUpdated = await User.update({ password }, { id: user_id });
+
+      const passwordUpdated = await User.update(
+        { password: new_password },
+        { where: { id: user_id }, individualHooks: true }
+      );
 
       if (passwordUpdated) {
         return res.status(201).json({
-          status: 1,
-          message: "Votre mot de passe a bien été réinitialisé.",
+          status: true,
+          message: "Votre mot de passe a bien été changé.",
           passwordUpdated,
         });
       }
     } catch (error) {
-      console.log({ "catch error restore password ": error });
+      console.log({ "catch error changing password ": error });
+      return res.status(400).json({
+        status: false,
+        message: "Processus de changement de mot de passe échoué.",
+      });
     }
   },
 };

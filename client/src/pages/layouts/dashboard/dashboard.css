@@ -73,6 +73,7 @@
   color: var(--black-color);
   font-size: var(--size-102);
   font-weight: 700;
+  font-family: "amiri", sans-serif;
 }
 .dashboard .section-2 .section-2-left .s2l-item span {
   color: var(--grey-color-1);
@@ -137,7 +138,7 @@
   justify-content: space-between;
 }
 .dashboard .section-3 .s3-item {
-  width: 30%;
+  width: 45%;
 }
 .dashboard .section-3 .s3-item .t-2 {
   font-size: var(--size-1);

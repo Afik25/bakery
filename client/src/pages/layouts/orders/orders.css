@@ -14,14 +14,38 @@
 .orders .inner {
   display: block;
 }
-.orders .inner .t-1 {
+.orders .inner .header-line {
+  width: 100%;
+  height: 70px;
+  display: flex;
+}
+.orders .inner .header-line .t-1 {
   color: var(--black-color);
   font-size: var(--size-102);
   font-weight: 700;
 }
-.orders .inner .t-1 span {
+.orders .inner .header-line .t-1 span {
   color: var(--grey-color-1);
   font-size: var(--size-08);
+}
+.orders .inner .header-line .statistics {
+  margin-left: var(--size-5);
+  display: flex;
+}
+.orders .inner .header-line .statistics .stat-item {
+  margin-left: var(--size-3);
+  border: 1px solid var(--grey-color-2);
+  border-radius: var(--size-03);
+  padding: var(--size-02) var(--size-05);
+  text-align: center;
+}
+.orders .inner .header-line .statistics .stat-item span {
+  font-size: var(--size-08);
+}
+.orders .inner .header-line .statistics .stat-item .t-2 {
+  margin: 0;
+  font-size: var(--size-2);
+  font-weight: 600;
 }
 .orders .inner .actions {
   width: 100%;
@@ -30,8 +54,10 @@
   justify-content: space-between;
   align-items: center;
   padding: var(--size-02) 0;
+  position: relative;
 }
 .orders .inner .actions .left {
+  width: auto;
   display: flex;
 }
 .orders .inner .actions .left .inputs-form {
@@ -67,9 +93,38 @@
   font-size: var(--size-08);
   padding: var(--size-02);
 }
-.orders .inner .actions .right {
-  max-width: 25%;
+.orders .inner .actions .middle {
+  width: auto;
   display: flex;
+}
+.orders .inner .actions .middle .inputs-form input {
+  position: relative;
+  width: auto;
+  height: 100%;
+  padding: var(--size-02) var(--size-02) var(--size-02) var(--size-107);
+  border-radius: var(--size-05);
+  border: 1px solid var(--grey-color-2);
+}
+.orders .inner .actions .middle select {
+  border-radius: var(--size-05);
+  border-color: var(--grey-color-2);
+  font-size: var(--size-08);
+  padding: var(--size-02);
+}
+.orders .inner .actions .middle .button {
+  display: flex;
+  align-items: center;
+  background-color: var(--black-color);
+  font-size: var(--size-07);
+  margin: 0 var(--size-02);
+}
+.orders .inner .actions .middle .button .icon {
+  margin-right: var(--size-07);
+}
+.orders .inner .actions .right {
+  width: auto;
+  display: flex;
+  justify-content: flex-end;
   align-items: center;
 }
 .orders .inner .actions .right .button {
@@ -99,9 +154,23 @@
 }
 .orders .inner .content {
   width: 100%;
-  height: calc(100% - 80px);
+  height: calc(100% - 110px);
+  position: relative;
 }
-.orders .inner .content .table .btn-action {
+.orders .inner .content .content-inner,
+.orders .inner .content .content-outer {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+.orders .inner .content .content-outer {
+  background-color: var(--white-color);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.orders .inner .content .content-inner .table .btn-action {
   background-color: var(--black-color);
   font-size: var(--size-07);
   margin: 0 var(--size-02);

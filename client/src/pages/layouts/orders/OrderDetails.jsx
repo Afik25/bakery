@@ -6,8 +6,10 @@ import moment from "moment";
 import { isEmpty } from "../../../utils/utils";
 import { useSelector, useDispatch } from "react-redux";
 import { onGetArticles } from "../../../services/configuration";
+import { onUpdateStatusOrder } from "../../../services/order";
 import useAxiosPrivate from "../../../hooks/context/state/useAxiosPrivate";
 //
+import swal from "sweetalert";
 import "moment/locale/fr";
 moment.locale("fr");
 
@@ -40,6 +42,39 @@ const OrderDetails = () => {
   const articles = useSelector(
     (state) => state.setInitConf?.initArticles?.articlesData
   );
+
+  const onSubmitUpdate = async (status) => {
+    const _data = {
+      order_id: parseInt(item?.id),
+      order_status: status,
+    };
+    onUpdateStatusOrder(axiosPrivate, _data)
+      .then((response) => {
+        if (response?.data?.status) {
+          swal({
+            title: "Mariathe : Traitement Statut de la Commande",
+            text: response?.data?.message,
+            icon: "success",
+          });
+          navigate(-1)
+        }
+      })
+      .catch((error) => {
+        if (!error?.response) {
+          swal({
+            title: "Mariathe : Traitement Statut de la Commande",
+            text: "No server response",
+            icon: "warning",
+          });
+        } else {
+          swal({
+            title: "Mariathe : Traitement Statut de la Commande",
+            text: error?.response?.data?.message,
+            icon: "error",
+          });
+        }
+      });
+  };
 
   return (
     <div className="order-details">
@@ -104,19 +139,19 @@ const OrderDetails = () => {
           <h3 className="title t-3">Détails commande (Panier)</h3>
           <button
             className="button canceled"
-            onClick={() => null}
+            onClick={() => onSubmitUpdate("canceled")}
           >
             Annuler
           </button>
           <button
             className="button approuved"
-            onClick={() => null}
+            onClick={() => onSubmitUpdate("approved")}
           >
             Approuver
           </button>
           <button
             className="button delivered"
-            onClick={() => null}
+            onClick={() => onSubmitUpdate("delivered")}
           >
             Livrée
           </button>
@@ -134,7 +169,7 @@ const OrderDetails = () => {
                   <th className="col-1 text-align-center">Remise</th>
                   <th className="col-1 text-align-center">A payer (CDF)</th>
                   <th className="col-2 text-align-center">Prix Total (CDF)</th>
-                  <th className="col-2 text-align-center">Actions</th>
+                  {/* <th className="col-2 text-align-center">Actions</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -173,7 +208,7 @@ const OrderDetails = () => {
                         <td className="col-2 text-align-center">
                           {parseInt(el?.total_price).toFixed(2)}
                         </td>
-                        <td className="col-2 text-align-center">
+                        {/* <td className="col-2 text-align-center">
                           <button
                             className="button"
                             //   onClick={() => onUpdate(el, idx)}
@@ -186,7 +221,7 @@ const OrderDetails = () => {
                           >
                             <FaTrashAlt className="icon" />
                           </button>
-                        </td>
+                        </td> */}
                       </tr>
                     );
                   })
