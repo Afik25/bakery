@@ -199,7 +199,7 @@ const Home = () => {
               <p className="title t-3">
                 Nous offrons une solution <strong>Tout-En-Un</strong> incluant
                 du pain, du vin, ou du jus selon les préférences de votre
-                congrégration. <br />
+                congrégation. <br />
                 Une première en RDC, nos gobelets de communion sont désormais
                 fabriqués localement à Kinshasa, garantissant frâicheur et
                 qualité pour chaque célebration.
@@ -210,7 +210,7 @@ const Home = () => {
                 src={ASSETS.HANDS}
                 alt="Nous offrons une solution Tout-En-Un incluant
                 du pain, du vin, ou du jus selon les préférences de votre
-                congrégration.
+                congrégation.
                 Une première en RDC, nos gobelets de communion sont désormais
                 fabriqués localement à Kinshasa, garantissant frâicheur et
                 qualité pour chaque célebration"
