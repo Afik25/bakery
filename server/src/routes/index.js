@@ -15,6 +15,11 @@ const Order = require("../api/v1/controllers/article/Order");
 //
 // root configure
 router.get("/auth/config", User.rootConfigure);
+router.get("/auth/test", (req, res) => {
+  res
+    .status(200)
+    .json({ status: true, message: "The test root working." });
+});
 //
 // login
 router.post("/auth/login", Login.login);
