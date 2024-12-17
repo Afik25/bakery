@@ -2,6 +2,9 @@ import axios from "axios";
 
 const BASE_URL = `${process.env.REACT_APP_API_SERVER_URL}:${process.env.REACT_APP_API_SERVER_PORT}/api/v1`;
 
+// Production
+// const BASE_URL = `${process.env.REACT_APP_API_SERVER_URL}`;
+
 export default axios.create({ baseURL: BASE_URL });
 export const axiosPrivate = axios.create({
   baseURL: BASE_URL,

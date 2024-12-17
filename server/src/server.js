@@ -5,14 +5,14 @@ require("./database"); // Connexion à la base de données
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
-const fsPromise = require("fs").promises;
+// const fsPromise = require("fs").promises;
 const cors = require("cors");
 const logger = require("morgan");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const compression = require("compression");
 const https = require("https");
-const http = require("http");
+// const http = require("http");
 //
 const credentials = require("./middlewares/credentials");
 const corsOptions = require("./middlewares/corsOptions");
