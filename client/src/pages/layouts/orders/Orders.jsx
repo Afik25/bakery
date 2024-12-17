@@ -36,10 +36,12 @@ import moment from "moment";
 //
 import Loader from "../../../components/loader/Loader";
 import "moment/locale/fr";
+import Bill from "../../../components/bill/Bill";
 moment.locale("fr");
 
 const Orders = () => {
   const [onNew, setOnNew] = useState(false);
+  const [isBill, setIsBill] = useState(true);
   const axiosPrivate = useAxiosPrivate();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -768,7 +770,11 @@ const Orders = () => {
               </div>
             </div>
           </div>
-          {isFiltering && <div className="content-outer"><Loader/></div>}
+          {isFiltering && (
+            <div className="content-outer">
+              <Loader />
+            </div>
+          )}
         </div>
       </div>
       {onNew && (
@@ -1240,6 +1246,11 @@ const Orders = () => {
               </div>
             </div>
           </div>
+        </div>
+      )}
+      {isBill && (
+        <div className="outer">
+          <Bill setIsBill={setIsBill} />
         </div>
       )}
     </div>

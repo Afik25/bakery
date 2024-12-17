@@ -1,0 +1,116 @@
+.bill-head {
+  width: 50%;
+  height: 60px;
+  text-align: center;
+  padding: var(--size-03);
+  background-color: var(--white-color);
+  border-bottom: 1px solid var(--grey-color-3);
+  margin: auto;
+}
+.bill-head .button {
+  background-color: var(--black-color);
+  margin: 0 var(--size-05);
+}
+.bill-head .button.btn-cancel {
+  background-color: var(--red-color);
+}
+.bill-wrapper {
+  width: 50%;
+  height: 92%;
+  background-color: var(--white-color);
+  margin: auto;
+}
+.bill-wrapper .bill-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--size-03);
+  overflow-y: auto;
+}
+.bill-wrapper .bill-container img {
+  height: 6em;
+}
+.bill-wrapper .bill-container .t-1 {
+  font-weight: 700;
+  font-size: var(--size-107);
+}
+.bill-wrapper .bill-container .t-2 {
+  font-weight: 500;
+  font-size: var(--size-07);
+}
+.bill-wrapper .bill-container .t-3 {
+  font-weight: 600;
+  font-size: var(--size-1);
+}
+.bill-wrapper .bill-container .t-4 {
+  color: var(--grey-color-1);
+  font-weight: 600;
+  font-size: var(--size-1);
+  text-align: center;
+}
+.bill-wrapper .bill-container .bill-table {
+  width: 100%;
+  margin-top: var(--size-07);
+  margin-bottom: var(--size-1);
+}
+.bill-wrapper .bill-container .bill-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.bill-wrapper .bill-container .bill-table table thead {
+  width: 100%;
+  background-color: var(--grey-color-3);
+  border-top: 1px solid var(--black-color);
+  border-bottom: 1px solid var(--black-color);
+}
+.bill-wrapper .bill-container .bill-table table thead th {
+  padding: var(--size-02) 0;
+  text-align: center;
+}
+.bill-wrapper .bill-container .bill-table table .col-1 {
+  width: 10%;
+}
+.bill-wrapper .bill-container .bill-table table .col-2 {
+  width: 80%;
+}
+.bill-wrapper .bill-container .bill-table table .col-3 {
+  width: 10%;
+}
+.bill-wrapper .bill-container .bill-table table .col-1,
+.bill-wrapper .bill-container .bill-table table .col-2,
+.bill-wrapper .bill-container .bill-table table .col-3 {
+  text-align: center;
+}
+.bill-wrapper .bill-container .bill-table table tbody .col-1,
+.bill-wrapper .bill-container .bill-table table tbody .col-2,
+.bill-wrapper .bill-container .bill-table table tbody .col-3 {
+  padding: var(--size-03);
+}
+.bill-wrapper .bill-container .bill-details {
+  width: 100%;
+}
+.bill-wrapper .bill-container .bill-details .bill-row {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+.bill-wrapper .bill-container .bill-details .bill-row .t-2 {
+  margin-left: var(--size-1);
+  font-size: var(--size-102);
+  font-weight: 700;
+}
+
+.bill-wrapper .bill-container .bill-hr {
+  width: 100%;
+  padding: var(--size-03) 0;
+}
+.bill-wrapper .bill-container .bill-hr hr {
+  width: 100%;
+  border: none;
+  border-top: 1px dashed var(--grey-color-1);
+  margin: auto;
+  margin-bottom: var(--size-05);
+}

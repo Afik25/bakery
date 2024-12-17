@@ -20,6 +20,7 @@ import OrderDetails from "../pages/layouts/orders/OrderDetails";
 import Stock from "../pages/layouts/stock/Stock";
 import User from "../pages/layouts/user/User";
 import Configuration from "../pages/layouts/configuration/Configuration";
+import Bill from "../components/bill/Bill";
 //
 import Category from "../pages/layouts/configuration/category/Category";
 import Article from "../pages/layouts/configuration/article/Article";
@@ -40,6 +41,7 @@ export const routes = [
     element: <MainLayout />,
     children: [
       { path: "/", element: <Home /> },
+      { path: "/bill", element: <Bill /> },
       { path: "/loader", element: <Loader /> },
       { path: "/sign-in", element: <Login /> },
       { path: "/sign-up", element: <Register /> },
