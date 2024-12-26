@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./header.css";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import LOGO from "../../assets/logo.png";
 import { MdMenu, MdClose } from "../../middlewares/icons";
 
@@ -31,29 +31,54 @@ const Header = ({ fix }) => {
           )}
         </div>
         <div className="navs">
-          <Link to="/" className="link nav">
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              isActive ? "link nav active-nav" : "link nav inactive-nav"
+            }
+          >
             Accueil
-          </Link>
-          <Link to="/about" className="link nav">
+          </NavLink>
+          <NavLink
+            to="/about"
+            className={({ isActive }) =>
+              isActive ? "link nav active-nav" : "link nav inactive-nav"
+            }
+          >
             À propos de nous
-          </Link>
-          <Link to="/products" className="link nav">
+          </NavLink>
+          <NavLink
+            to="/products"
+            className={({ isActive }) =>
+              isActive ? "link nav active-nav" : "link nav inactive-nav"
+            }
+          >
             Nos Produits
-          </Link>
-          <Link to="/communion" className="link nav">
+          </NavLink>
+          <NavLink
+            to="/communion"
+            className={({ isActive }) =>
+              isActive ? "link nav active-nav" : "link nav inactive-nav"
+            }
+          >
             La Cène
-          </Link>
-          <Link to="/contacts" className="link nav">
+          </NavLink>
+          <NavLink
+            to="/contacts"
+            className={({ isActive }) =>
+              isActive ? "link nav active-nav" : "link nav inactive-nav"
+            }
+          >
             Contacts
-          </Link>
+          </NavLink>
           <Link to="/order" className="link order-btn">
             Commander
           </Link>
         </div>
         <div className="signs">
-          <Link to="" className="link">
+          {/* <Link to="" className="link">
             S'inscrire
-          </Link>
+          </Link> */}
           <Link to="/sign-in" className="link button">
             Se Connecter
           </Link>

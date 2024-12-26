@@ -86,11 +86,50 @@ module.exports = {
       });
     }
   },
-  async get(_, res) {
+  async get(req, res) {
     try {
-      const _orders = await Order.findAll();
+      const { user_id, order_page, order_rows } = req.params;
+      // Orders states
+      const _ordersStates = await Order.findAll({
+        where: { user_id: user_id },
+        attributes: [
+          "status", // Grouping by the 'status' field
+          [Sequelize.fn("COUNT", Sequelize.col("status")), "statusCount"], // Count the number of orders with each status
+        ],
+        group: ["status"], // Grouping by 'status'
+      });
+      // approved - pending
+      const deliveredOrder = _ordersStates.find(
+        (order) => order?.dataValues?.status === "delivered"
+      );
+      const approvedOrder = _ordersStates.find(
+        (order) => order?.dataValues?.status === "approved"
+      );
+      const pendingOrder = _ordersStates.find(
+        (order) => order?.dataValues?.status === "pending"
+      );
+      const canceledOrder = _ordersStates.find(
+        (order) => order?.dataValues?.status === "canceled"
+      );
+      // 
+      const ordersStates = {
+        delivered: deliveredOrder?.dataValues?.statusCount || 0,
+        approved: approvedOrder?.dataValues?.statusCount || 0,
+        pending: pendingOrder?.dataValues?.statusCount || 0,
+        canceled: canceledOrder?.dataValues?.statusCount || 0,
+      };
+      //
+      // Calculate offset
+      const offset = (parseInt(order_page) - 1) * parseInt(order_rows);
+
+      // Retreive orders with pagination
+      const { rows, count } = await Order.findAndCountAll({
+        where: { user_id: user_id },
+        limit: parseInt(order_rows), // Limite du nombre d'éléments par page
+        offset: offset, // Décalage (offset) des résultats
+      });
       const _detailsOrder = await DetailsOrder.findAll();
-      if (_orders == "" || _orders == null) {
+      if (rows == "" || rows == null) {
         return res.status(200).json({
           status: false,
           length: 0,
@@ -98,8 +137,8 @@ module.exports = {
         });
       }
       let ordersArray = [];
-      for (let i = 0; i < _orders.length; i++) {
-        const element = _orders[i];
+      for (let i = 0; i < rows.length; i++) {
+        const element = rows[i];
         let detailsOrder = _detailsOrder.filter(
           (x) => x.order_id === element?.id
         );
@@ -137,9 +176,19 @@ module.exports = {
       });
       const orders = ordersSorted;
 
-      return res
-        .status(200)
-        .json({ status: true, length: orders.length, orders });
+      // Nombre total de pages
+      const totalPages = Math.ceil(count / order_rows);
+
+      return res.status(200).json({
+        status: true,
+        length: orders.length,
+        orders: orders, // Les résultats de la page demandée
+        totalOrders: count, // Nombre total de commandes
+        totalPages: totalPages, // Nombre total de pages
+        currentPage: order_page, // Page actuelle
+        order_rows: order_rows, // Taille de la page
+        ordersStates,
+      });
     } catch (error) {
       console.log({ "catch error get Orders ": error });
       return res

@@ -1,4 +1,5 @@
-import { CATEGORY, ARTICLES } from "../routes";
+import axios from "../middlewares/http-common";
+import { CATEGORY, CATEGORIES, ARTICLES, _ARTICLES } from "../routes";
 import { onHandleFile } from "../utils/utils";
 
 // CATEGORIES
@@ -7,6 +8,20 @@ export function onGetCategories(axiosPrivate, signal) {
   return new Promise(async (resolve, reject) => {
     await axiosPrivate
       .get(CATEGORY, {
+        signal: signal,
+      })
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+export function onGetCategoriesForPage(signal) {
+  return new Promise(async (resolve, reject) => {
+    await axios
+      .get(CATEGORIES, {
         signal: signal,
       })
       .then((response) => {
@@ -69,6 +84,20 @@ export function onGetArticles(axiosPrivate, signal) {
   return new Promise(async (resolve, reject) => {
     await axiosPrivate
       .get(ARTICLES, {
+        signal: signal,
+      })
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+export function onGetArticlesForPage(signal) {
+  return new Promise(async (resolve, reject) => {
+    await axios
+      .get(_ARTICLES, {
         signal: signal,
       })
       .then((response) => {

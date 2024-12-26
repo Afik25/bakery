@@ -31,13 +31,11 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { wait, validationSchemaNewsletter } from "../../utils/utils";
 import { onSubscription } from "../../services/user";
-import useAxiosPrivate from "../../hooks/context/state/useAxiosPrivate";
 import MessageBox from "../../components/msgBox/MessageBox";
 
 const Home = () => {
   const [fix, setFix] = useState(false);
   //
-  const axiosPrivate = useAxiosPrivate();
   const [isSending, setIsSending] = useState(false);
   const [isShowingMessage, setIsShowingMessage] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
@@ -69,7 +67,7 @@ const Home = () => {
     setIsSending(true);
     await wait(400);
     //
-    onSubscription(axiosPrivate, data)
+    onSubscription(data)
       .then((response) => {
         if (response?.data?.status) {
           setIsSending(false);
@@ -156,7 +154,7 @@ const Home = () => {
           </div>
         </div>
         <div className="ruban">
-          <div className="inner" data-aos="fade-right">
+          <div className="inner">
             <div className="container">
               <img
                 src={ASSETS.BAKERY9}
@@ -170,7 +168,7 @@ const Home = () => {
               />
             </div>
           </div>
-          <div className="outer" data-aos="fade-up">
+          <div className="outer">
             <div className="container">
               <div className="left">
                 <img

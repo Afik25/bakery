@@ -66,3 +66,15 @@
     font-size: var(--size-07);
   }
 }
+/* Tablet devices (portrait and landscape) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .footer .container {
+    width: 95%;
+  }
+  .footer .container .up .item .logo {
+    width: 140px;
+  }
+  .footer .container .down .link {
+    color: blue;
+  }
+}

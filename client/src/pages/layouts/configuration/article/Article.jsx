@@ -296,7 +296,7 @@ const Article = () => {
                           <input type="checkbox" />
                         </td>
                         <td className="col-2 text-align-left">
-                          {moment(item?.createdAt).format("LLLL")}
+                          {moment(item?.updated_at).format("LLLL")}
                         </td>
                         <td className="col-2 text-align-left">
                           <div className="row">

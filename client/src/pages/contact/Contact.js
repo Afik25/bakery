@@ -15,11 +15,9 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { wait, validationSchemaMessage } from "../../utils/utils";
 import { onMessaging } from "../../services/user";
-import useAxiosPrivate from "../../hooks/context/state/useAxiosPrivate";
 import MessageBox from "../../components/msgBox/MessageBox";
 
 const Contact = () => {
-  const axiosPrivate = useAxiosPrivate();
   const [isSending, setIsSending] = useState(false);
   const [isShowingMessage, setIsShowingMessage] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
@@ -38,7 +36,7 @@ const Contact = () => {
     setIsSending(true);
     await wait(400);
     //
-    onMessaging(axiosPrivate, data)
+    onMessaging(data)
       .then((response) => {
         if (response?.data?.status) {
           setIsSending(false);

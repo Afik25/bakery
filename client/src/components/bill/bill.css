@@ -51,6 +51,20 @@
   font-size: var(--size-1);
   text-align: center;
 }
+.bill-wrapper .bill-container .head-row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.bill-wrapper .bill-container .head-column {
+  display: flex;
+  flex-direction: column;
+}
+.bill-wrapper .bill-container .head-column .t-1 {
+  font-size: var(--size-1);
+  font-family: "amiri", sans-serif;
+}
 .bill-wrapper .bill-container .bill-table {
   width: 100%;
   margin-top: var(--size-07);
@@ -74,10 +88,7 @@
   width: 10%;
 }
 .bill-wrapper .bill-container .bill-table table .col-2 {
-  width: 80%;
-}
-.bill-wrapper .bill-container .bill-table table .col-3 {
-  width: 10%;
+  width: 70%;
 }
 .bill-wrapper .bill-container .bill-table table .col-1,
 .bill-wrapper .bill-container .bill-table table .col-2,
@@ -101,6 +112,7 @@
   margin-left: var(--size-1);
   font-size: var(--size-102);
   font-weight: 700;
+  font-family: "amiri", sans-serif;
 }
 
 .bill-wrapper .bill-container .bill-hr {

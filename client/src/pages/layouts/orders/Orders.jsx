@@ -33,18 +33,25 @@ import { onGetUsers } from "../../../services/user";
 import useAxiosPrivate from "../../../hooks/context/state/useAxiosPrivate";
 import MessageBox from "../../../components/msgBox/MessageBox";
 import moment from "moment";
+import swal from "sweetalert";
 //
 import Loader from "../../../components/loader/Loader";
-import "moment/locale/fr";
 import Bill from "../../../components/bill/Bill";
+import "moment/locale/fr";
 moment.locale("fr");
 
 const Orders = () => {
   const [onNew, setOnNew] = useState(false);
-  const [isBill, setIsBill] = useState(true);
+  const [isBill, setIsBill] = useState({
+    isPrint: false,
+    billNumber: "",
+    customer: "",
+  });
   const axiosPrivate = useAxiosPrivate();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [orderPage, setOrdersPage] = useState(1);
+  const [orderRows, setOrderRows] = useState(5);
   const [ordersArray, setOrdersArray] = useState([]);
   const [isFirstStep, setIsFirstStep] = useState(true);
   const [isSending, setIsSending] = useState(false);
@@ -61,12 +68,6 @@ const Orders = () => {
   // Actions
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [orderCode, setOrderCode] = useState("");
-  const [_ordersGroupedStatus, setOrdersGroupedStatus] = useState({
-    delivered: 0,
-    approved: 0,
-    pending: 0,
-    canceled: 0,
-  });
   const [isFiltering, setIsFiltering] = useState(false);
   //
   var dateNow = new Date().toISOString().slice(0, 10);
@@ -77,30 +78,21 @@ const Orders = () => {
     status: "",
   });
 
-  useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
-    const signal = controller.signal;
+  const connectedUser = useSelector(
+    (state) => state.setInitConf.initConnectedUser.connectedUserData
+  );
 
-    onGetArticles(axiosPrivate, signal).then((result) => {
-      dispatch({
-        type: "setUp/getArticles",
-        payload: result,
-      });
-    });
+  const articles = useSelector(
+    (state) => state.setInitConf?.initArticles?.articlesData
+  );
 
-    onGetOrders(axiosPrivate, signal).then((result) => {
-      dispatch({
-        type: "setUpOrder/getOrders",
-        payload: result,
-      });
-    });
+  const orders = useSelector(
+    (state) => state.setOrderSlice?.initOrders?.ordersData
+  );
 
-    return () => {
-      isMounted = false;
-      isMounted && controller.abort();
-    };
-  }, []);
+  const users = useSelector(
+    (state) => state.setUserSlice?.initUsers?.usersData
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -122,6 +114,38 @@ const Orders = () => {
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    onGetArticles(axiosPrivate, signal).then((result) => {
+      dispatch({
+        type: "setUp/getArticles",
+        payload: result,
+      });
+    });
+
+    onGetOrders(
+      connectedUser?.userInfo?.user_id,
+      orderPage,
+      orderRows,
+      axiosPrivate,
+      signal
+    ).then((result) => {
+      dispatch({
+        type: "setUpOrder/getOrders",
+        payload: result,
+      });
+    });
+
+    return () => {
+      isMounted = false;
+      isMounted && controller.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log({ orders: orders });
     let ordersFilter = orders?.data?.orders?.filter(
       (_order) =>
         parseInt(_order.user_id) ===
@@ -130,47 +154,7 @@ const Orders = () => {
     const reversed = ordersFilter?.reverse();
     //
     setOrdersArray(reversed);
-    //
-    const groupedStatus = Object.groupBy(
-      reversed || [],
-      ({ status }) => status
-    );
-    const groupedKeys = Object.keys(groupedStatus);
-    //
-    let _deliv = 0;
-    let _appr = 0;
-    let _pend = 0;
-    let _canc = 0;
-    for (let j = 0; j < groupedKeys.length; j++) {
-      const element = groupedKeys[j];
-      if (element === "delivered") _deliv = groupedStatus[element]?.length;
-      if (element === "approved") _appr = groupedStatus[element]?.length;
-      if (element === "pending") _pend = groupedStatus[element]?.length;
-      if (element === "canceled") _canc = groupedStatus[element]?.length;
-    }
-    setOrdersGroupedStatus({
-      delivered: _deliv,
-      approved: _appr,
-      pending: _pend,
-      canceled: _canc,
-    });
   }, []);
-
-  const connectedUser = useSelector(
-    (state) => state.setInitConf.initConnectedUser.connectedUserData
-  );
-
-  const articles = useSelector(
-    (state) => state.setInitConf?.initArticles?.articlesData
-  );
-
-  const orders = useSelector(
-    (state) => state.setOrderSlice?.initOrders?.ordersData
-  );
-
-  const users = useSelector(
-    (state) => state.setUserSlice?.initUsers?.usersData
-  );
 
   const {
     register,
@@ -335,30 +319,6 @@ const Orders = () => {
       const reversed = ordersFilter?.reverse();
       setOrdersArray(reversed);
       //
-      const groupedStatus = Object.groupBy(
-        reversed || [],
-        ({ status }) => status
-      );
-      const groupedKeys = Object.keys(groupedStatus);
-      //
-      let _deliv = 0;
-      let _appr = 0;
-      let _pend = 0;
-      let _canc = 0;
-      for (let j = 0; j < groupedKeys.length; j++) {
-        const element = groupedKeys[j];
-        if (element === "delivered") _deliv = groupedStatus[element]?.length;
-        if (element === "approved") _appr = groupedStatus[element]?.length;
-        if (element === "pending") _pend = groupedStatus[element]?.length;
-        if (element === "canceled") _canc = groupedStatus[element]?.length;
-      }
-      setOrdersGroupedStatus({
-        delivered: _deliv,
-        approved: _appr,
-        pending: _pend,
-        canceled: _canc,
-      });
-      //
       dispatch({
         type: "setUpOrder/getOrders",
         payload: result,
@@ -397,30 +357,6 @@ const Orders = () => {
       const reversed = ordersFilter?.reverse();
       setOrdersArray(reversed);
       //
-      const groupedStatus = Object.groupBy(
-        reversed || [],
-        ({ status }) => status
-      );
-      const groupedKeys = Object.keys(groupedStatus);
-      //
-      let _deliv = 0;
-      let _appr = 0;
-      let _pend = 0;
-      let _canc = 0;
-      for (let j = 0; j < groupedKeys.length; j++) {
-        const element = groupedKeys[j];
-        if (element === "delivered") _deliv = groupedStatus[element]?.length;
-        if (element === "approved") _appr = groupedStatus[element]?.length;
-        if (element === "pending") _pend = groupedStatus[element]?.length;
-        if (element === "canceled") _canc = groupedStatus[element]?.length;
-      }
-      setOrdersGroupedStatus({
-        delivered: _deliv,
-        approved: _appr,
-        pending: _pend,
-        canceled: _canc,
-      });
-      //
       dispatch({
         type: "setUpOrder/getOrders",
         payload: result,
@@ -428,6 +364,37 @@ const Orders = () => {
       setIsFiltering(false);
     });
     //
+    return () => {
+      isMounted = false;
+      isMounted && controller.abort();
+    };
+  };
+
+  const onChangeOrderRows = async (e) => {
+    let isMounted = true;
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    onGetArticles(axiosPrivate, signal).then((result) => {
+      dispatch({
+        type: "setUp/getArticles",
+        payload: result,
+      });
+    });
+
+    onGetOrders(
+      connectedUser?.userInfo?.user_id,
+      orderPage,
+      parseInt(e?.target?.value),
+      axiosPrivate,
+      signal
+    ).then((result) => {
+      dispatch({
+        type: "setUpOrder/getOrders",
+        payload: result,
+      });
+    });
+
     return () => {
       isMounted = false;
       isMounted && controller.abort();
@@ -471,6 +438,27 @@ const Orders = () => {
           setIsSending(false);
           setIsShowingMessage(true);
           setMessage({ type: "success", text: response?.data?.message });
+          //
+          swal({
+            title: "Facturation !",
+            text: "Voulez-vous imprimer la facture de la commande ?",
+            icon: "warning",
+            buttons: ["Non", "Oui, Imprimer la facture!"],
+          })
+            .then((isConfirm) => {
+              if (isConfirm) {
+                setIsBill({
+                  isPrint: true,
+                  billNumber: response?.data?.order?.code,
+                  customer: response?.data?.order?.customer,
+                });
+              } else {
+                setBasket([]);
+              }
+            })
+            .catch((error) => {
+              console.error("Error in Swal:", error);
+            });
         }
         //
         onGetOrders(axiosPrivate, signal).then((result) => {
@@ -482,31 +470,6 @@ const Orders = () => {
           );
           const reversed = ordersFilter?.reverse();
           setOrdersArray(reversed);
-          //
-          const groupedStatus = Object.groupBy(
-            reversed || [],
-            ({ status }) => status
-          );
-          const groupedKeys = Object.keys(groupedStatus);
-          //
-          let _deliv = 0;
-          let _appr = 0;
-          let _pend = 0;
-          let _canc = 0;
-          for (let j = 0; j < groupedKeys.length; j++) {
-            const element = groupedKeys[j];
-            if (element === "delivered")
-              _deliv = groupedStatus[element]?.length;
-            if (element === "approved") _appr = groupedStatus[element]?.length;
-            if (element === "pending") _pend = groupedStatus[element]?.length;
-            if (element === "canceled") _canc = groupedStatus[element]?.length;
-          }
-          setOrdersGroupedStatus({
-            delivered: _deliv,
-            approved: _appr,
-            pending: _pend,
-            canceled: _canc,
-          });
           //
           dispatch({
             type: "setUpOrder/getOrders",
@@ -520,7 +483,7 @@ const Orders = () => {
           reset2();
           setArticleStockState("");
           setNetPayable(0);
-          setBasket([]);
+          // setBasket([]);
           setIsFirstStep(true);
         }, 2000);
         return () => {
@@ -558,19 +521,27 @@ const Orders = () => {
           <div className="statistics">
             <div className="stat-item">
               <span>Commandes Livrées</span>
-              <h2 className="title t-2">{_ordersGroupedStatus?.delivered}</h2>
+              <h2 className="title t-2">
+                {orders?.data?.ordersStates?.delivered}
+              </h2>
             </div>
             <div className="stat-item">
               <span>Commandes Approuvées</span>
-              <h2 className="title t-2">{_ordersGroupedStatus?.approved}</h2>
+              <h2 className="title t-2">
+                {orders?.data?.ordersStates?.approved}
+              </h2>
             </div>
             <div className="stat-item">
               <span>Commandes En attente</span>
-              <h2 className="title t-2">{_ordersGroupedStatus?.pending}</h2>
+              <h2 className="title t-2">
+                {orders?.data?.ordersStates?.pending}
+              </h2>
             </div>
             <div className="stat-item">
               <span>Commandes Annulées</span>
-              <h2 className="title t-2">{_ordersGroupedStatus?.canceled}</h2>
+              <h2 className="title t-2">
+                {orders?.data?.ordersStates?.canceled}
+              </h2>
             </div>
           </div>
         </div>
@@ -756,13 +727,17 @@ const Orders = () => {
             </div>
             <div className="pagination">
               <div className="p-left">
-                <select>
+                <select onChange={(e) => onChangeOrderRows(e?.target?.value)}>
                   <option value={5}>5 lignes</option>
                   <option value={10}>10 lignes</option>
                   <option value={15}>15 lignes</option>
                   <option value={20}>20 lignes</option>
                 </select>
-                <span>1-5 de 50 resultats</span>
+                <span>
+                  Page : {orders?.data?.currentPage}/{orders?.data?.totalPages}
+                </span>
+                <span>|</span>
+                <span>1-5 de {orders?.data?.totalOrders} resultats</span>
               </div>
               <div className="p-right">
                 <button className="button btn-previous">Précedent</button>
@@ -1248,9 +1223,14 @@ const Orders = () => {
           </div>
         </div>
       )}
-      {isBill && (
+      {isBill?.isPrint && (
         <div className="outer">
-          <Bill setIsBill={setIsBill} />
+          <Bill
+            setIsBill={setIsBill}
+            isBill={isBill}
+            setBasket={setBasket}
+            basket={basket}
+          />
         </div>
       )}
     </div>

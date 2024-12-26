@@ -170,6 +170,15 @@
   align-items: center;
   justify-content: center;
 }
+.orders .inner .content .content-inner .table {
+  overflow-y: auto;
+}
+.orders .inner .content .content-inner .table thead th {
+  background-color: var(--grey-color-3);
+  position: sticky;
+  top: 0; 
+  z-index: 1;
+}
 .orders .inner .content .content-inner .table .btn-action {
   background-color: var(--black-color);
   font-size: var(--size-07);

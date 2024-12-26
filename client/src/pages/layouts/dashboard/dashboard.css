@@ -16,8 +16,9 @@
 .dashboard .section-1 .section-1-item {
   width: 24.5%;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   padding: var(--size-1);
   border-radius: var(--size-09);
   box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
@@ -26,6 +27,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: var(--size-08);
 }
 .dashboard .section-1 .section-1-item .caption .icon {
   color: var(--color-1);
@@ -39,7 +41,7 @@
 }
 .dashboard .section-1 .section-1-item .t-2 {
   color: var(--color-1);
-  font-size: var(--size-2);
+  font-size: var(--size-102);
   font-weight: 700;
   margin: 0;
 }

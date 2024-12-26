@@ -1,0 +1,21 @@
+.not-found {
+  width: 100vw;
+  height: 100vh;
+}
+.not-found .not-found-body {
+  width: 100%;
+  text-align: center;
+  padding: var(--size-105) 0;
+}
+.not-found .not-found-body .t-1 {
+  font-size: var(--size-2);
+  font-weight: 600;
+}
+.not-found .not-found-body .t-2 {
+  color: var(--grey-color-1);
+  font-size: var(--size-105);
+  font-weight: 600;
+}
+.not-found .not-found-body img {
+  height: 50%;
+}

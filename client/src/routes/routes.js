@@ -20,15 +20,14 @@ import OrderDetails from "../pages/layouts/orders/OrderDetails";
 import Stock from "../pages/layouts/stock/Stock";
 import User from "../pages/layouts/user/User";
 import Configuration from "../pages/layouts/configuration/Configuration";
-import Bill from "../components/bill/Bill";
 //
 import Category from "../pages/layouts/configuration/category/Category";
 import Article from "../pages/layouts/configuration/article/Article";
 import Profile from "../pages/layouts/configuration/profile/Profile";
 //
 // Control
-import NotFound from "../pages/404";
-import Unauthorized from "../pages/Unauthorized";
+import NotFound from "../pages/error/404";
+import Unauthorized from "../pages/error/Unauthorized";
 
 const ROLES = {
   admin: "admin",
@@ -41,7 +40,6 @@ export const routes = [
     element: <MainLayout />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/bill", element: <Bill /> },
       { path: "/loader", element: <Loader /> },
       { path: "/sign-in", element: <Login /> },
       { path: "/sign-up", element: <Register /> },

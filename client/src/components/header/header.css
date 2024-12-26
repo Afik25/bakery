@@ -18,7 +18,7 @@
   align-items: center;
 }
 .header .container .logo {
-  width: 120px;
+  /* width: 120px; */
   height: 80px;
 }
 .header .container .drawer {
@@ -40,6 +40,12 @@
 .header .container .navs .nav:hover {
   color: var(--color-1);
   transition: all 0.3s ease-in-out;
+}
+.header .container .navs .nav.active-nav {
+  color: var(--color-1);
+}
+.header .container .navs .nav.inactive-nav {
+  color: unset;
 }
 .header .container .navs .order-btn {
   background-color: var(--color-1);
@@ -110,5 +116,21 @@
   }
   .header .container .button {
     font-size: var(--size-07);
+  }
+}
+/* Tablet devices (portrait and landscape) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* Styles for tablets */
+  .header .container {
+    width: 95%;
+  }
+  .header .container .navs .nav {
+    font-size: var(--size-09);
+  }
+  .header .container .navs .order-btn {
+    font-size: var(--size-09);
+  }
+  .header .container .signs .button {
+    font-size: var(--size-09);
   }
 }

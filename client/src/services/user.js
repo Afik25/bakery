@@ -1,3 +1,4 @@
+import axios from "../middlewares/http-common";
 import { USERS } from "../routes";
 
 export function onGetUsers(axiosPrivate, signal) {
@@ -40,13 +41,13 @@ export function onCreateUser(axiosPrivate, data) {
 }
 export function onUpdateUser(axiosPrivate, data) {}
 // newsletter
-export function onSubscription(axiosPrivate, data) {
+export function onSubscription(data) {
   const formData = {
     mail: data?.mail,
   };
   //
   return new Promise(async (resolve, reject) => {
-    await axiosPrivate
+    await axios
       .post("/on/subscription", formData, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
@@ -79,7 +80,7 @@ export function onUnSubscription(axiosPrivate, data) {
   });
 }
 // message
-export function onMessaging(axiosPrivate, data) {
+export function onMessaging(data) {
   const formData = {
     firstname: data?.firstname,
     lastname: data?.lastname,
@@ -88,8 +89,7 @@ export function onMessaging(axiosPrivate, data) {
   };
   //
   return new Promise(async (resolve, reject) => {
-    await axiosPrivate
-      .post("/message/send", formData, {
+    await axios.post("/message/send", formData, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       })
@@ -101,4 +101,3 @@ export function onMessaging(axiosPrivate, data) {
       });
   });
 }
-

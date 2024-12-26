@@ -130,7 +130,7 @@ const Login = () => {
           </button>
           <div className="row row-2">
             <span>Vous n'avez pas un compte ?</span>
-            <Link to={"/sign-up"} className="link">
+            <Link to={""} className="link">
               S'Inscrire
             </Link>
           </div>

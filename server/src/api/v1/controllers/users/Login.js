@@ -4,6 +4,7 @@ const Login = require("../../models/users/Login");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+// require("dotenv").config("../../../../../.env");
 const { Op } = require("sequelize");
 
 module.exports = {
@@ -98,8 +99,10 @@ module.exports = {
       );
 
       res.cookie("jwt", refreshToken, {
-        httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000,
+        httpOnly: true, // Le cookie ne peut pas être accédé via JavaScript
+        secure: process.env.NODE_ENV == "production" ? true : false, // Envoi uniquement sur une connexion HTTPS
+        maxAge: 24 * 60 * 60 * 1000, // 1 jour en millisecondes
+        sameSite: process.env.NODE_ENV == "production" ? "Strict" : "None", // Restrict les requêtes inter-domaines
       });
 
       return res.status(200).json({

@@ -15,11 +15,6 @@ const Order = require("../api/v1/controllers/article/Order");
 //
 // root configure
 router.get("/auth/config", User.rootConfigure);
-router.get("/auth/test", (req, res) => {
-  res
-    .status(200)
-    .json({ status: true, message: "The test root working." });
-});
 //
 // login
 router.post("/auth/login", Login.login);
@@ -29,11 +24,13 @@ router.get("/auth/logout", Login.logout);
 // Category
 router
   .get("/config/categories", verifyJWT, Category.get)
+  .get("/config/categories/for/page", Category.get)
   .post("/config/categories", verifyJWT, Category.create);
 //
 // Article
 router
   .get("/config/articles", verifyJWT, Article.get)
+  .get("/config/articles/for/page", Article.get)
   .post(
     "/config/articles",
     verifyJWT,
@@ -56,9 +53,11 @@ router
 router
   .get("/orders/dasboard", verifyJWT, Order.dashboard)
   .get("/orders", verifyJWT, Order.get)
+  .get("/orders/:user_id/:order_page/:order_rows", verifyJWT, Order.get)
   .get("/orders/by/keys", verifyJWT, Order.getByKeys)
   .get("/orders/by/code", verifyJWT, Order.getByCode)
   .post("/orders", verifyJWT, Order.create)
+  .post("/orders/for/page", Order.create)
   .patch("/orders/update/status/:status/:id", verifyJWT, Order.updateStatus);
 //
 // User

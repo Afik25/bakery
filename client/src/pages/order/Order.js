@@ -9,9 +9,11 @@ import {
   FaMinus,
   FaPlus,
 } from "../../middlewares/icons";
-import { onGetCategories, onGetArticles } from "../../services/configuration";
-import { onCreateOrder } from "../../services/order";
-import useAxiosPrivate from "../../hooks/context/state/useAxiosPrivate";
+import {
+  onGetCategoriesForPage,
+  onGetArticlesForPage,
+} from "../../services/configuration";
+import { onCreateOrderForPage } from "../../services/order";
 import { useDispatch, useSelector } from "react-redux";
 import {
   isEmpty,
@@ -26,7 +28,6 @@ import swal from "sweetalert";
 
 const Order = () => {
   const [onOpenBasket, setOnOpenBasket] = useState(false);
-  const axiosPrivate = useAxiosPrivate();
   const dispatch = useDispatch();
   //
   const [selectedCategory, setSelectedCategory] = useState(0);
@@ -51,14 +52,14 @@ const Order = () => {
     const controller = new AbortController();
     const signal = controller.signal;
 
-    onGetCategories(axiosPrivate, signal).then((result) => {
+    onGetCategoriesForPage(signal).then((result) => {
       dispatch({
         type: "setUp/getCategories",
         payload: result,
       });
     });
 
-    onGetArticles(axiosPrivate, signal).then((result) => {
+    onGetArticlesForPage(signal).then((result) => {
       dispatch({
         type: "setUp/getArticles",
         payload: result,
@@ -121,7 +122,7 @@ const Order = () => {
       order_details: basketArray,
     };
     //
-    onCreateOrder(axiosPrivate, _data)
+    onCreateOrderForPage(_data)
       .then((response) => {
         if (response?.data?.status) {
           setIsSending(false);
