@@ -90,6 +90,15 @@
   width: 100%;
   height: calc(100% - 80px);
 }
+.categories .inner .content .table {
+  overflow-y: auto;
+}
+.categories .inner .content .table thead th {
+  background-color: var(--grey-color-3);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
 .categories .inner .content .table .row {
   display: flex;
   align-items: center;

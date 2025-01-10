@@ -106,6 +106,82 @@ module.exports = {
       console.log({ "catch error get articles ": error });
     }
   },
+  async getByKeys(req, res) {
+    try {
+      const { articles_page, articles_rows } = req.params;
+      // Calculate offset
+      const offset = (parseInt(articles_page) - 1) * parseInt(articles_rows);
+
+      const _categories = await Category.findAll();
+
+      // Retreive orders with pagination
+      const { rows, count } = await Article.findAndCountAll({
+        limit: parseInt(articles_rows), // Limite du nombre d'éléments par page
+        offset: offset, // Décalage (offset) des résultats
+        order: [["title", "ASC"]], // created_at / updated_at
+      });
+
+      if (
+        _categories == "" ||
+        _categories == null ||
+        rows == "" ||
+        rows == null
+      ) {
+        return res.status(200).json({
+          status: false,
+          length: 0,
+          message: "No information available about Article.",
+        });
+      }
+      let articlesArray = [];
+      for (let i = 0; i < rows.length; i++) {
+        const element = rows[i]?.category_id;
+        let category = _categories.filter((x) => x.id === element);
+        //
+        articlesArray.push({
+          category_title: category[0]?.title,
+          category_id: rows[i]?.category_id,
+          id: rows[i]?.id,
+          code: rows[i]?.code,
+          title: rows[i]?.title,
+          price: rows[i]?.price,
+          currency: rows[i]?.currency,
+          threshold: rows[i]?.threshold,
+          description: rows[i]?.description,
+          thumbnail: rows[i]?.thumbnail,
+          status: rows[i]?.status,
+          updated_at: rows[i]?.updated_at,
+          created_at: rows[i]?.created_at,
+        });
+      }
+
+      const articlesSorted = articlesArray.sort(function (a, b) {
+        if (a.title < b.title) {
+          return -1;
+        }
+      });
+
+      const articles = articlesSorted;
+
+      // Nombre total de pages
+      const totalPages = Math.ceil(count / articles_rows);
+
+      return res.status(200).json({
+        status: true,
+        length: articles.length,
+        articles: articles, // Les résultats de la page demandée
+        totalArticles: count, // Nombre total de categories
+        totalPages: totalPages, // Nombre total de pages
+        currentPage: articles_page, // Page actuelle
+        articles_rows: articles_rows, // Taille de la page
+      });
+    } catch (error) {
+      console.log({ "catch error get articles": error });
+      return res
+        .status(400)
+        .json({ status: false, message: "catch error get articles" });
+    }
+  },
   async update(req, res) {
     try {
       const { telephone, address } = req.body;

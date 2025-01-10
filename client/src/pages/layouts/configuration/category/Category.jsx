@@ -25,6 +25,8 @@ const Category = () => {
   const [onNew, setOnNew] = useState(false);
   const axiosPrivate = useAxiosPrivate();
   const dispatch = useDispatch();
+  const [categoriesPage, setCategoriesPage] = useState(1);
+  const [categoriesRows, setCategoriesRows] = useState(5);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [isShowingMessage, setIsShowingMessage] = useState(false);
@@ -35,22 +37,26 @@ const Category = () => {
     const controller = new AbortController();
     const signal = controller.signal;
 
-    onGetCategories(axiosPrivate, signal).then((result) => {
-      dispatch({
-        type: "setUp/getCategories",
-        payload: result,
-      });
-    });
+    onGetCategories(categoriesPage, categoriesRows, axiosPrivate, signal).then(
+      (result) => {
+        dispatch({
+          type: "setUp/getCategories",
+          payload: result,
+        });
+      }
+    );
 
     return () => {
       isMounted = false;
       isMounted && controller.abort();
     };
-  }, []);
+  }, [categoriesPage, categoriesRows]);
 
   const categories = useSelector(
     (state) => state.setInitConf?.initCategories?.categoriesData
   );
+
+  useEffect(() => {}, [categories]);
 
   const {
     register,
@@ -82,14 +88,19 @@ const Category = () => {
               setIsShowingMessage(true);
               setMessage({ type: "success", text: response?.data?.message });
               //
-              onGetCategories(axiosPrivate, signal).then((result) => {
+              onGetCategories(
+                categoriesPage,
+                categoriesRows,
+                axiosPrivate,
+                signal
+              ).then((result) => {
                 dispatch({
                   type: "setUp/getCategories",
                   payload: result,
                 });
               });
               //
-            }else{
+            } else {
               setIsSending(false);
               setIsShowingMessage(true);
               setMessage({ type: "warning", text: response?.data?.message });
@@ -127,7 +138,12 @@ const Category = () => {
               setIsShowingMessage(true);
               setMessage({ type: "success", text: response?.data?.message });
               //
-              onGetCategories(axiosPrivate, signal).then((result) => {
+              onGetCategories(
+                categoriesPage,
+                categoriesRows,
+                axiosPrivate,
+                signal
+              ).then((result) => {
                 dispatch({
                   type: "setUp/getCategories",
                   payload: result,
@@ -189,7 +205,12 @@ const Category = () => {
             icon: "success",
           });
           //
-          onGetCategories(axiosPrivate, signal).then((result) => {
+          onGetCategories(
+            categoriesPage,
+            categoriesRows,
+            axiosPrivate,
+            signal
+          ).then((result) => {
             dispatch({
               type: "setUp/getCategories",
               payload: result,
@@ -306,17 +327,52 @@ const Category = () => {
           </div>
           <div className="pagination">
             <div className="p-left">
-              <select>
+              <select onChange={(e) => setCategoriesRows(e?.target?.value)}>
                 <option value={5}>5 lignes</option>
                 <option value={10}>10 lignes</option>
                 <option value={15}>15 lignes</option>
                 <option value={20}>20 lignes</option>
               </select>
-              <span>1-5 de 50 resultats</span>
+              <span>
+                Page : {categories?.data?.currentPage}/
+                {categories?.data?.totalPages}
+              </span>
+              <span>|</span>
+              <span>
+                1-{categories?.data?.categories?.length} de{" "}
+                {categories?.data?.totalCategories} resultats
+              </span>
             </div>
             <div className="p-right">
-              <button className="button btn-previous">Précedent</button>
-              <button className="button btn-next">Suivant</button>
+              <button
+                className={
+                  parseInt(categories?.data?.currentPage) === 1
+                    ? "button btn-inactive"
+                    : "button btn-active"
+                }
+                onClick={() =>
+                  setCategoriesPage((prev) => (prev === 1 ? 1 : prev - 1))
+                }
+              >
+                Précedent
+              </button>
+              <button
+                className={
+                  categories?.data?.totalPages <= 1 ||
+                  categories?.data?.currentPage === categories?.data?.totalPages
+                    ? "button btn-inactive"
+                    : "button btn-active"
+                }
+                onClick={() =>
+                  setCategoriesPage((next) =>
+                    next === categories?.data?.totalPages
+                      ? categories?.data?.totalPages
+                      : next + 1
+                  )
+                }
+              >
+                Suivant
+              </button>
             </div>
           </div>
         </div>

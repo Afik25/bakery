@@ -21,7 +21,7 @@ import {
   validationSchemaOnAddToBasket,
   validationSchemaOrder,
 } from "../../../utils/utils";
-import { onGetArticles } from "../../../services/configuration";
+import { onGetArticlesForPage } from "../../../services/configuration";
 import { onGetStocksByArticleId } from "../../../services/stock";
 import {
   onCreateOrder,
@@ -42,10 +42,9 @@ moment.locale("fr");
 
 const Orders = () => {
   const [onNew, setOnNew] = useState(false);
-  const [isBill, setIsBill] = useState({
+  const [isPrintBill, setIsPrintBill] = useState({
     isPrint: false,
-    billNumber: "",
-    customer: "",
+    order: "",
   });
   const axiosPrivate = useAxiosPrivate();
   const dispatch = useDispatch();
@@ -86,9 +85,62 @@ const Orders = () => {
     (state) => state.setInitConf?.initArticles?.articlesData
   );
 
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    onGetArticlesForPage(signal).then((result) => {
+      dispatch({
+        type: "setUp/getArticles",
+        payload: result,
+      });
+    });
+
+    return () => {
+      isMounted = false;
+      isMounted && controller.abort();
+    };
+  }, []);
+
   const orders = useSelector(
     (state) => state.setOrderSlice?.initOrders?.ordersData
   );
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    onGetOrders(
+      connectedUser?.userInfo?.user_id,
+      orderPage,
+      orderRows,
+      axiosPrivate,
+      signal
+    ).then((result) => {
+      dispatch({
+        type: "setUpOrder/getOrders",
+        payload: result,
+      });
+    });
+
+    return () => {
+      isMounted = false;
+      isMounted && controller.abort();
+    };
+  }, [orderPage, orderRows]);
+
+  useEffect(() => {
+    // console.log({ orders: orders });
+    const unSortedOrders = orders?.data?.orders.slice();
+    unSortedOrders?.sort((a, b) => {
+      return new Date(b.dates) - new Date(a.dates);
+    });
+    const sorted = unSortedOrders;
+    //
+    setOrdersArray(sorted);
+  }, [orders]);
 
   const users = useSelector(
     (state) => state.setUserSlice?.initUsers?.usersData
@@ -113,49 +165,6 @@ const Orders = () => {
     };
   }, []);
 
-  useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    onGetArticles(axiosPrivate, signal).then((result) => {
-      dispatch({
-        type: "setUp/getArticles",
-        payload: result,
-      });
-    });
-
-    onGetOrders(
-      connectedUser?.userInfo?.user_id,
-      orderPage,
-      orderRows,
-      axiosPrivate,
-      signal
-    ).then((result) => {
-      dispatch({
-        type: "setUpOrder/getOrders",
-        payload: result,
-      });
-    });
-
-    return () => {
-      isMounted = false;
-      isMounted && controller.abort();
-    };
-  }, []);
-
-  useEffect(() => {
-    console.log({ orders: orders });
-    let ordersFilter = orders?.data?.orders?.filter(
-      (_order) =>
-        parseInt(_order.user_id) ===
-          parseInt(connectedUser?.userInfo?.user_id) || _order.user_id == null
-    );
-    const reversed = ordersFilter?.reverse();
-    //
-    setOrdersArray(reversed);
-  }, []);
-
   const {
     register,
     handleSubmit,
@@ -177,6 +186,11 @@ const Orders = () => {
     },
   });
 
+  const currentDate = new Date().toISOString().split("T")[0];
+  // const currentDateInFrenchFOrmat = new Intl.DateTimeFormat("fr-FR").format(
+  //   new Date()
+  // );
+
   const {
     register: register2,
     handleSubmit: handleSubmit2,
@@ -189,7 +203,7 @@ const Orders = () => {
     resolver: yupResolver(validationSchemaOrder),
     defaultValues: {
       user_id: connectedUser?.userInfo?.user_id,
-      order_dates: "",
+      order_dates: currentDate,
       order_discount: 0,
       order_discount_type: isOrderDiscount,
       order_pay_mode: "",
@@ -370,37 +384,6 @@ const Orders = () => {
     };
   };
 
-  const onChangeOrderRows = async (e) => {
-    let isMounted = true;
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    onGetArticles(axiosPrivate, signal).then((result) => {
-      dispatch({
-        type: "setUp/getArticles",
-        payload: result,
-      });
-    });
-
-    onGetOrders(
-      connectedUser?.userInfo?.user_id,
-      orderPage,
-      parseInt(e?.target?.value),
-      axiosPrivate,
-      signal
-    ).then((result) => {
-      dispatch({
-        type: "setUpOrder/getOrders",
-        payload: result,
-      });
-    });
-
-    return () => {
-      isMounted = false;
-      isMounted && controller.abort();
-    };
-  };
-
   const onSubmit = async (data) => {
     let _totalAmount = 0;
     for (let i = 0; i < basket.length; i++) {
@@ -447,10 +430,9 @@ const Orders = () => {
           })
             .then((isConfirm) => {
               if (isConfirm) {
-                setIsBill({
+                setIsPrintBill({
                   isPrint: true,
-                  billNumber: response?.data?.order?.code,
-                  customer: response?.data?.order?.customer,
+                  order: response?.data?.order,
                 });
               } else {
                 setBasket([]);
@@ -461,16 +443,13 @@ const Orders = () => {
             });
         }
         //
-        onGetOrders(axiosPrivate, signal).then((result) => {
-          let ordersFilter = result?.data?.orders?.filter(
-            (_order) =>
-              parseInt(_order.user_id) ===
-                parseInt(connectedUser?.userInfo?.user_id) ||
-              _order.user_id == null
-          );
-          const reversed = ordersFilter?.reverse();
-          setOrdersArray(reversed);
-          //
+        onGetOrders(
+          connectedUser?.userInfo?.user_id,
+          orderPage,
+          orderRows,
+          axiosPrivate,
+          signal
+        ).then((result) => {
           dispatch({
             type: "setUpOrder/getOrders",
             payload: result,
@@ -727,7 +706,7 @@ const Orders = () => {
             </div>
             <div className="pagination">
               <div className="p-left">
-                <select onChange={(e) => onChangeOrderRows(e?.target?.value)}>
+                <select onChange={(e) => setOrderRows(e?.target?.value)}>
                   <option value={5}>5 lignes</option>
                   <option value={10}>10 lignes</option>
                   <option value={15}>15 lignes</option>
@@ -737,11 +716,41 @@ const Orders = () => {
                   Page : {orders?.data?.currentPage}/{orders?.data?.totalPages}
                 </span>
                 <span>|</span>
-                <span>1-5 de {orders?.data?.totalOrders} resultats</span>
+                <span>
+                  1-{ordersArray?.length} de {orders?.data?.totalOrders}{" "}
+                  resultats
+                </span>
               </div>
               <div className="p-right">
-                <button className="button btn-previous">Précedent</button>
-                <button className="button btn-next">Suivant</button>
+                <button
+                  className={
+                    orders?.data?.currentPage === 1
+                      ? "button btn-inactive"
+                      : "button btn-active"
+                  }
+                  onClick={() =>
+                    setOrdersPage((prev) => (prev === 1 ? 1 : prev - 1))
+                  }
+                >
+                  Précedent
+                </button>
+                <button
+                  className={
+                    orders?.data?.totalPages <= 1 ||
+                    orders?.data?.currentPage === orders?.data?.totalPages
+                      ? "button btn-inactive"
+                      : "button btn-active"
+                  }
+                  onClick={() =>
+                    setOrdersPage((next) =>
+                      next === orders?.data?.totalPages
+                        ? orders?.data?.totalPages
+                        : next + 1
+                    )
+                  }
+                >
+                  Suivant
+                </button>
               </div>
             </div>
           </div>
@@ -962,11 +971,9 @@ const Orders = () => {
                   <button
                     className="step-btn"
                     onClick={() => {
-                      {
-                        isFirstStep && basket.length > 0
-                          ? setIsFirstStep(false)
-                          : setIsFirstStep(true);
-                      }
+                      isFirstStep && basket.length > 0
+                        ? setIsFirstStep(false)
+                        : setIsFirstStep(true);
                     }}
                   >
                     {isFirstStep ? "Suivant" : "Précedent"}
@@ -1140,11 +1147,9 @@ const Orders = () => {
                         className="input-select"
                         {...register2("order_pay_mode")}
                       >
-                        <option value={""} selected>
-                          --- Mode de Paiement ---
-                        </option>
+                        <option value={""}>--- Mode de Paiement ---</option>
                         <option value={"cash"}>Cash</option>
-                        <option value={"mpesa"}>M-pesa</option>
+                        <option value={"mobile money"}>Mobile Money</option>
                       </select>
                       {errors2.order_pay_mode && (
                         <span className="fade-in">
@@ -1157,7 +1162,7 @@ const Orders = () => {
                         className="input-select"
                         {...register2("order_status")}
                       >
-                        <option value={""} selected>
+                        <option value={""}>
                           --- Etat de commande/vente ---
                         </option>
                         <option value={"pending"}>En attente</option>
@@ -1223,13 +1228,13 @@ const Orders = () => {
           </div>
         </div>
       )}
-      {isBill?.isPrint && (
+      {isPrintBill?.isPrint && (
         <div className="outer">
           <Bill
-            setIsBill={setIsBill}
-            isBill={isBill}
-            setBasket={setBasket}
+            setIsPrintBill={setIsPrintBill}
+            order={isPrintBill?.order}
             basket={basket}
+            setBasket={setBasket}
           />
         </div>
       )}

@@ -90,6 +90,15 @@
   width: 100%;
   height: calc(100% - 80px);
 }
+.articles .inner .content .table {
+  overflow-y: auto;
+}
+.articles .inner .content .table thead th {
+  background-color: var(--grey-color-3);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
 .articles .inner .content .table .row {
   display: flex;
   align-items: center;

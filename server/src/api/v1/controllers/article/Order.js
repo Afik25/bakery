@@ -111,7 +111,7 @@ module.exports = {
       const canceledOrder = _ordersStates.find(
         (order) => order?.dataValues?.status === "canceled"
       );
-      // 
+      //
       const ordersStates = {
         delivered: deliveredOrder?.dataValues?.statusCount || 0,
         approved: approvedOrder?.dataValues?.statusCount || 0,
@@ -127,6 +127,7 @@ module.exports = {
         where: { user_id: user_id },
         limit: parseInt(order_rows), // Limite du nombre d'éléments par page
         offset: offset, // Décalage (offset) des résultats
+        order: [['dates', 'DESC']] // created_at / updated_at
       });
       const _detailsOrder = await DetailsOrder.findAll();
       if (rows == "" || rows == null) {

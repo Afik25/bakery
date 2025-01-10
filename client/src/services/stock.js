@@ -1,9 +1,9 @@
 import { STOCKS } from "../routes";
 
-export function onGetStocks(axiosPrivate, signal) {
+export function onGetStocks(stocksPage, stocksRows, axiosPrivate, signal) {
   return new Promise(async (resolve, reject) => {
     await axiosPrivate
-      .get(STOCKS + "/inventory", {
+      .get(STOCKS + "/inventory/" + stocksPage + "/" + stocksRows, {
         signal: signal,
       })
       .then((response) => {
@@ -28,10 +28,10 @@ export function onGetStocksByArticleId(axiosPrivate, signal, article_id) {
       });
   });
 }
-export function onGetStockMovements(axiosPrivate, signal) {
+export function onGetStockMovements(operationsPage, operationsRows, axiosPrivate, signal) {
   return new Promise(async (resolve, reject) => {
     await axiosPrivate
-      .get(STOCKS, {
+      .get(STOCKS + "/" + operationsPage + "/" + operationsRows, {
         signal: signal,
       })
       .then((response) => {

@@ -102,12 +102,12 @@
   padding: var(--size-05) var(--size-07);
   margin: 0 var(--size-02);
 }
-.pagination .p-right .button.btn-previous {
+.pagination .p-right .button.btn-inactive {
   background-color: var(--white-color);
   border: 1px solid var(--grey-color-2);
   color: var(--grey-color-1);
 }
-.pagination .p-right .button.btn-next {
+.pagination .p-right .button.btn-active {
   background-color: var(--black-color);
   border: 1px solid var(--black-color);
   color: var(--white-color);

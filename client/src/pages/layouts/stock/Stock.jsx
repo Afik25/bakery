@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
 import { isEmpty, wait, validationSchemaStock } from "../../../utils/utils";
-import { onGetArticles } from "../../../services/configuration";
+import { onGetArticlesForPage } from "../../../services/configuration";
 import {
   onGetStocks,
   onGetStockMovements,
@@ -26,29 +26,20 @@ const Stock = () => {
   const [isSending, setIsSending] = useState(false);
   const [isShowingMessage, setIsShowingMessage] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  //
+  const [operationsPage, setOperationsPage] = useState(1);
+  const [operationsRows, setOperationsRows] = useState(5);
+  const [stocksPage, setStocksPage] = useState(1);
+  const [stocksRows, setStocksRows] = useState(5);
 
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
     const signal = controller.signal;
 
-    onGetArticles(axiosPrivate, signal).then((result) => {
+    onGetArticlesForPage(signal).then((result) => {
       dispatch({
         type: "setUp/getArticles",
-        payload: result,
-      });
-    });
-
-    onGetStockMovements(axiosPrivate, signal).then((result) => {
-      dispatch({
-        type: "setUpStock/getStockMovements",
-        payload: result,
-      });
-    });
-
-    onGetStocks(axiosPrivate, signal).then((result) => {
-      dispatch({
-        type: "setUpStock/getStocks",
         payload: result,
       });
     });
@@ -59,6 +50,47 @@ const Stock = () => {
     };
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    onGetStockMovements(
+      operationsPage,
+      operationsRows,
+      axiosPrivate,
+      signal
+    ).then((result) => {
+      dispatch({
+        type: "setUpStock/getStockMovements",
+        payload: result,
+      });
+    });
+
+    return () => {
+      isMounted = false;
+      isMounted && controller.abort();
+    };
+  }, [operationsPage, operationsRows]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    onGetStocks(stocksPage, stocksRows, axiosPrivate, signal).then((result) => {
+      dispatch({
+        type: "setUpStock/getStocks",
+        payload: result,
+      });
+    });
+
+    return () => {
+      isMounted = false;
+      isMounted && controller.abort();
+    };
+  }, [stocksPage, stocksRows]);
+
   const articles = useSelector(
     (state) => state.setInitConf?.initArticles?.articlesData
   );
@@ -66,7 +98,7 @@ const Stock = () => {
   const stockMovements = useSelector(
     (state) => state.setStockSlice?.initStockMovements?.stockMovementsData
   );
-
+  
   const stocks = useSelector(
     (state) => state.setStockSlice?.initStocks?.stocksData
   );
@@ -240,7 +272,11 @@ const Stock = () => {
                   </option>
                 ) : (
                   articles?.data?.articles?.map((item, _) => {
-                    return <option value={item?.id} key={item?.id}>{item?.title}</option>;
+                    return (
+                      <option value={item?.id} key={item?.id}>
+                        {item?.title}
+                      </option>
+                    );
                   })
                 )}
               </select>
@@ -446,19 +482,110 @@ const Stock = () => {
             </table>
           </div>
           <div className="pagination">
-            <div className="p-left">
-              <select>
-                <option value={5}>5 lignes</option>
-                <option value={10}>10 lignes</option>
-                <option value={15}>15 lignes</option>
-                <option value={20}>20 lignes</option>
-              </select>
-              <span>1-5 de 50 resultats</span>
-            </div>
-            <div className="p-right">
-              <button className="button btn-previous">Précedent</button>
-              <button className="button btn-next">Suivant</button>
-            </div>
+            {isOperation ? (
+              <>
+                <div className="p-left">
+                  <select onChange={(e) => setOperationsRows(e?.target?.value)}>
+                    <option value={5}>5 lignes</option>
+                    <option value={10}>10 lignes</option>
+                    <option value={15}>15 lignes</option>
+                    <option value={20}>20 lignes</option>
+                  </select>
+                  <span>
+                    Page : {stockMovements?.data?.currentPage}/
+                    {stockMovements?.data?.totalPages}
+                  </span>
+                  <span>|</span>
+                  <span>
+                    1 - {stockMovements?.data?.stockMovements?.length} de{" "}
+                    {stockMovements?.data?.totalStockMovements} resultats
+                  </span>
+                </div>
+                <div className="p-right">
+                  <button
+                    className={
+                      parseInt(stockMovements?.data?.currentPage) === 1
+                        ? "button btn-inactive"
+                        : "button btn-active"
+                    }
+                    onClick={() =>
+                      setOperationsPage((prev) => (prev === 1 ? 1 : prev - 1))
+                    }
+                  >
+                    Précedent
+                  </button>
+                  <button
+                    className={
+                      stockMovements?.data?.totalPages <= 1 ||
+                      stockMovements?.data?.currentPage ===
+                        stockMovements?.data?.totalPages
+                        ? "button btn-inactive"
+                        : "button btn-active"
+                    }
+                    onClick={() =>
+                      setOperationsPage((next) =>
+                        next === stockMovements?.data?.totalPages
+                          ? stockMovements?.data?.totalPages
+                          : next + 1
+                      )
+                    }
+                  >
+                    Suivant
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="p-left">
+                  <select onChange={(e) => setStocksRows(e?.target?.value)}>
+                    <option value={5}>5 lignes</option>
+                    <option value={10}>10 lignes</option>
+                    <option value={15}>15 lignes</option>
+                    <option value={20}>20 lignes</option>
+                  </select>
+                  <span>
+                    Page : {stocks?.data?.currentPage}/
+                    {stocks?.data?.totalPages}
+                  </span>
+                  <span>|</span>
+                  <span>
+                    1 - {stocks?.data?.articlesStocks?.length} de{" "}
+                    {stocks?.data?.totalStocks?.length} resultats
+                  </span>
+                </div>
+                <div className="p-right">
+                  <button
+                    className={
+                      parseInt(stocks?.data?.currentPage) === 1
+                        ? "button btn-inactive"
+                        : "button btn-active"
+                    }
+                    onClick={() =>
+                      setStocksPage((prev) => (prev === 1 ? 1 : prev - 1))
+                    }
+                  >
+                    Précedent
+                  </button>
+                  <button
+                    className={
+                      stocks?.data?.totalPages <= 1 ||
+                      stocks?.data?.currentPage === stocks?.data?.totalPages
+                        ? "button btn-inactive"
+                        : "button btn-active"
+                    }
+                    onClick={() =>
+                      setStocksPage((next) =>
+                        next === stocks?.data?.totalPages
+                          ? stocks?.data?.totalPages
+                          : next + 1
+                      )
+                    }
+                  >
+                    Suivant
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

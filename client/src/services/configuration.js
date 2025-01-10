@@ -4,10 +4,15 @@ import { onHandleFile } from "../utils/utils";
 
 // CATEGORIES
 //
-export function onGetCategories(axiosPrivate, signal) {
+export function onGetCategories(
+  categoriesPage,
+  categoriesRows,
+  axiosPrivate,
+  signal
+) {
   return new Promise(async (resolve, reject) => {
     await axiosPrivate
-      .get(CATEGORY, {
+      .get(CATEGORY + "/" + categoriesPage + "/" + categoriesRows, {
         signal: signal,
       })
       .then((response) => {
@@ -80,10 +85,15 @@ export function onActivationCategory(axiosPrivate, data) {
 //
 // ARTICLES
 //
-export function onGetArticles(axiosPrivate, signal) {
+export function onGetArticles(
+  articlesPage,
+  articlesRows,
+  axiosPrivate,
+  signal
+) {
   return new Promise(async (resolve, reject) => {
     await axiosPrivate
-      .get(ARTICLES, {
+      .get(ARTICLES + "/" + articlesPage + "/" + articlesRows, {
         signal: signal,
       })
       .then((response) => {

@@ -61,6 +61,15 @@
   width: 100%;
   height: calc(100% - 95px);
 }
+.users .inner .content .table {
+  overflow-y: auto;
+}
+.users .inner .content .table thead th {
+  background-color: var(--grey-color-3);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
 .users .inner .content .table .row {
   display: flex;
   align-items: center;
@@ -87,29 +96,14 @@
   font-size: var(--size-09);
   color: var(--grey-color-1);
 }
+.users .inner .content .table td div {
+  display: flex;
+  justify-content: center;
+}
 .users .inner .content .table .btn-action {
   background-color: var(--black-color);
   font-size: var(--size-07);
   margin: 0 var(--size-02);
-}
-.users .inner .content .table .stock-state {
-  border-radius: var(--size-05);
-  padding: var(--size-05) var(--size-07);
-  font-size: var(--size-07);
-  color: var(--white-color);
-  font-weight: 600;
-}
-.users .inner .content .table .stock-state.in-stock {
-  background-color: var(--green-color);
-}
-.users .inner .content .table .stock-state.out-stock {
-  background-color: var(--red-color);
-}
-.users .inner .content .table .stock-state.low-stock {
-  background-color: var(--color-1);
-}
-.users .inner .content .table .stock-state.critically-low {
-  background-color: var(--grey-color-1);
 }
 /* Outer */
 .users .outer {

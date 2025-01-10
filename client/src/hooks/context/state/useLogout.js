@@ -9,13 +9,14 @@ const useLogout = () => {
     try {
       const dates = new Date();
       const data = { updated_at: dates };
-      await axiosPrivate.get(
+      const result = await axiosPrivate.get(
         LOGOUT,
         { params: data },
         {
           withCredentials: true,
         }
       );
+      console.log({ "result logout": result });
       setAuth({});
     } catch (error) {
       console.log(error);

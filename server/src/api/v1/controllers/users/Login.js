@@ -35,6 +35,16 @@ module.exports = {
         });
       }
 
+      const user_status = user.status;
+      if (user_status == 0) {
+        return res.status(400).json({
+          status: false,
+          isLogged: false,
+          message:
+            "Votre compte n'est pas actif. Priere de contacter l'administrateur.",
+        });
+      }
+
       if (!bcrypt.compareSync(password, user.password)) {
         return res.status(400).json({
           status: false,
@@ -124,7 +134,10 @@ module.exports = {
   async refreshToken(req, res) {
     try {
       const cookies = req?.cookies;
-      if (!cookies?.jwt) return res.sendStatus(401);
+      if (!cookies?.jwt)
+        return res
+          .status(401)
+          .json({ message: "[COOKIES NOT FOUND] : Undefined JWT!" });
       // console.log({ "Cookies verify ": cookies.jwt });
 
       const refreshToken = cookies?.jwt;
@@ -191,16 +204,19 @@ module.exports = {
       const connected = await Login.findOne({
         where: { refresh_token: refreshToken },
       });
+      console.log({ "connected req?.query": connected });
       if (connected) {
         await Login.update(
           { connection_status: 0 },
           { where: { refresh_token: refreshToken, updated_at: updated_at } }
         );
+        console.log({ pass1: "Pass1" });
         res.clearCookie("jwt", {
           httpOnly: true,
           sameSite: "None",
           secure: true,
         });
+        console.log({ pass2: "Pass2" });
         return res.status(204).json({
           status: true,
           isLogged: false,

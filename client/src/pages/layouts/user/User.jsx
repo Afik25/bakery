@@ -10,31 +10,41 @@ import {
   validationSchemaUser,
   capitalize,
 } from "../../../utils/utils";
-import { onGetUsers, onCreateUser, onUpdateUser } from "../../../services/user";
+import {
+  onGetUsersByRange,
+  onCreateUser,
+  onUpdateUser,
+  onActivationUser,
+} from "../../../services/user";
 import useAxiosPrivate from "../../../hooks/context/state/useAxiosPrivate";
 import MessageBox from "../../../components/msgBox/MessageBox";
 import moment from "moment";
+import swal from "sweetalert";
 
 const User = () => {
-  const [onNew, setOnNew] = useState(false);
-  const axiosPrivate = useAxiosPrivate();
   const dispatch = useDispatch();
-  const [isUpdating, setIsUpdating] = useState(false);
+  const axiosPrivate = useAxiosPrivate();
+  const [onNew, setOnNew] = useState(false);
   const [isSending, setIsSending] = useState(false);
-  const [isShowingMessage, setIsShowingMessage] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [isShowingMessage, setIsShowingMessage] = useState(false);
+  const [usersPage, setUsersPage] = useState(1);
+  const [usersRows, setUsersRows] = useState(5);
 
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
     const signal = controller.signal;
 
-    onGetUsers(axiosPrivate, signal).then((result) => {
-      dispatch({
-        type: "setUpUser/getUsers",
-        payload: result,
-      });
-    });
+    onGetUsersByRange(usersPage, usersRows, axiosPrivate, signal).then(
+      (result) => {
+        dispatch({
+          type: "setUpUser/getUsers",
+          payload: result,
+        });
+      }
+    );
 
     return () => {
       isMounted = false;
@@ -55,6 +65,9 @@ const User = () => {
   } = useForm({
     mode: "all",
     resolver: yupResolver(validationSchemaUser),
+    defaultValues: {
+      id: "",
+    },
   });
 
   const onSubmit = async (data) => {
@@ -73,7 +86,12 @@ const User = () => {
               setIsShowingMessage(true);
               setMessage({ type: "success", text: response?.data?.message });
               //
-              onGetUsers(axiosPrivate, signal).then((result) => {
+              onGetUsersByRange(
+                usersPage,
+                usersRows,
+                axiosPrivate,
+                signal
+              ).then((result) => {
                 dispatch({
                   type: "setUpUser/getUsers",
                   payload: result,
@@ -106,14 +124,19 @@ const User = () => {
             }, 4000);
             return () => clearTimeout(timer);
           })
-      : onUpdateUser(axiosPrivate, data)
+      : onUpdateUser(data, axiosPrivate)
           .then((response) => {
             if (response?.data?.status) {
               setIsSending(false);
               setIsShowingMessage(true);
               setMessage({ type: "success", text: response?.data?.message });
               //
-              onGetUsers(axiosPrivate, signal).then((result) => {
+              onGetUsersByRange(
+                usersPage,
+                usersRows,
+                axiosPrivate,
+                signal
+              ).then((result) => {
                 dispatch({
                   type: "setUpUser/getUsers",
                   payload: result,
@@ -151,9 +174,71 @@ const User = () => {
 
   const onUpdate = (item) => {
     setValue("id", item?.id);
-    setValue("title", item?.title);
-    setValue("type", item?.type);
-    setValue("description", item?.description);
+    setValue("firstname", item?.firstname);
+    setValue("lastname", item?.lastname);
+    setValue("gender", item?.gender);
+    setValue("telephone", item?.telephone);
+    setValue("mail", item?.mail);
+    setValue("sys_role", item?.sys_role);
+    //
+    setOnNew(true);
+    setIsUpdating(true);
+  };
+
+  const onActivation = async (id, status) => {
+    setIsSending(true);
+    await wait(200);
+    //
+    let isMounted = true;
+    const controller = new AbortController();
+    const signal = controller.signal;
+    //
+    const data = {
+      id: id,
+      status: status,
+    };
+    //
+    onActivationUser(data, axiosPrivate)
+      .then((response) => {
+        if (response?.data?.status) {
+          setIsSending(false);
+          //
+          swal({
+            title: "Account Activation/Desactivation",
+            text: response?.data?.message,
+            icon: "success",
+          });
+          //
+          onGetUsersByRange(usersPage, usersRows, axiosPrivate, signal).then(
+            (result) => {
+              dispatch({
+                type: "setUpUser/getUsers",
+                payload: result,
+              });
+            }
+          );
+        }
+        return () => {
+          isMounted = false;
+          isMounted && controller.abort();
+        };
+      })
+      .catch((error) => {
+        setIsSending(false);
+        if (!error?.response) {
+          swal({
+            title: "Account Activation/Desactivation",
+            text: "No server response",
+            icon: "warning",
+          });
+        } else {
+          swal({
+            title: "Account Activation/Desactivation",
+            text: error?.response?.data?.message,
+            icon: "error",
+          });
+        }
+      });
   };
 
   return (
@@ -186,6 +271,8 @@ const User = () => {
                   <th className="col-2 text-align-left">E-mail</th>
                   <th className="col-1 text-align-center">Téléphone</th>
                   <th className="col-1 text-align-center">Rôle</th>
+                  <th className="col-1 text-align-center">Statut</th>
+                  <th className="col-1 text-align-center">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -221,6 +308,29 @@ const User = () => {
                         <td className="col-1 text-align-center">
                           {item?.sys_role}
                         </td>
+                        <td className="col-1 text-align-center">
+                          {parseInt(item?.status) === 1 ? "actif" : "inactif"}
+                        </td>
+                        <td className="col-1 text-align-center">
+                          <div>
+                            <button
+                              className="button btn-action"
+                              onClick={() => onUpdate(item)}
+                            >
+                              Editer
+                            </button>
+                            <button
+                              className="button btn-action"
+                              onClick={() =>
+                                onActivation(item?.id, item?.status)
+                              }
+                            >
+                              {parseInt(item?.status) === 1
+                                ? "Desactiver"
+                                : "Activer"}
+                            </button>
+                          </div>
+                        </td>
                       </tr>
                     );
                   })
@@ -230,17 +340,51 @@ const User = () => {
           </div>
           <div className="pagination">
             <div className="p-left">
-              <select>
+              <select onChange={(e) => setUsersRows(e?.target?.value)}>
                 <option value={5}>5 lignes</option>
                 <option value={10}>10 lignes</option>
                 <option value={15}>15 lignes</option>
                 <option value={20}>20 lignes</option>
               </select>
-              <span>1-5 de 50 resultats</span>
+              <span>
+                Page : {users?.data?.currentPage}/{users?.data?.totalPages}
+              </span>
+              <span>|</span>
+              <span>
+                1-{users?.data?.users?.length} de {users?.data?.totalUsers}{" "}
+                resultats
+              </span>
             </div>
             <div className="p-right">
-              <button className="button btn-previous">Précedent</button>
-              <button className="button btn-next">Suivant</button>
+              <button
+                className={
+                  parseInt(users?.data?.currentPage) === 1
+                    ? "button btn-inactive"
+                    : "button btn-active"
+                }
+                onClick={() =>
+                  setUsersPage((prev) => (prev === 1 ? 1 : prev - 1))
+                }
+              >
+                Précedent
+              </button>
+              <button
+                className={
+                  users?.data?.totalPages <= 1 ||
+                  users?.data?.currentPage === users?.data?.totalPages
+                    ? "button btn-inactive"
+                    : "button btn-active"
+                }
+                onClick={() =>
+                  setUsersPage((next) =>
+                    next === users?.data?.totalPages
+                      ? users?.data?.totalPages
+                      : next + 1
+                  )
+                }
+              >
+                Suivant
+              </button>
             </div>
           </div>
         </div>
@@ -348,7 +492,7 @@ const User = () => {
                   </option>
                   <option value={"admin"}>Admin</option>
                   <option value={"manager"}>Gerant</option>
-                  <option value={"seller"}>Vendeur</option>
+                  <option value={"user"}>Vendeur</option>
                 </select>
                 {errors.sys_role && (
                   <span className="fade-in">{errors.sys_role.message}</span>

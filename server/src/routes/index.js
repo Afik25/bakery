@@ -23,14 +23,22 @@ router.get("/auth/logout", Login.logout);
 //
 // Category
 router
-  .get("/config/categories", verifyJWT, Category.get)
   .get("/config/categories/for/page", Category.get)
+  .get(
+    "/config/categories/:categories_page/:categories_rows",
+    verifyJWT,
+    Category.getByKeys
+  )
   .post("/config/categories", verifyJWT, Category.create);
 //
 // Article
 router
-  .get("/config/articles", verifyJWT, Article.get)
   .get("/config/articles/for/page", Article.get)
+  .get(
+    "/config/articles/:articles_page/:articles_rows",
+    verifyJWT,
+    Article.getByKeys
+  )
   .post(
     "/config/articles",
     verifyJWT,
@@ -40,8 +48,12 @@ router
 //
 // StockMovement
 router
-  .get("/stock/movements", verifyJWT, StockMovement.get)
-  .get("/stock/movements/inventory", verifyJWT, StockMovement.getInventory)
+  .get("/stock/movements/:operations_page/:operations_rows", verifyJWT, StockMovement.get)
+  .get(
+    "/stock/movements/inventory/:stocks_page/:stocks_rows",
+    verifyJWT,
+    StockMovement.getInventory
+  )
   .get(
     "/stock/movements/inventory/:article_id",
     verifyJWT,
@@ -62,8 +74,11 @@ router
 //
 // User
 router
+  .get("/users", verifyJWT, User.get)
+  .get("/users/:users_page/:users_rows", verifyJWT, User.getByKeys)
   .post("/users/auth/register", verifyJWT, User.create)
-  .get("/users", verifyJWT, User.get);
+  .patch("/users/auth/activation/:id/:status", verifyJWT, User.activation)
+  .put("/users/auth/update", verifyJWT, User.update);
 router
   .get("/user/key/:key", verifyJWT, User.getByKey)
   .put("/user/key/:id", verifyJWT, User.update)

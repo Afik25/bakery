@@ -56,14 +56,12 @@ module.exports = {
           user,
         });
       }
-      return res.status(400).json({
-        status: false,
-        message: `The registration of ${
-          prename.charAt(0).toUpperCase() + prename.slice(1).toLowerCase()
-        } ${name.toUpperCase()} failed.`,
-      });
     } catch (error) {
       console.log({ "catch error create User : ": error });
+      return res.status(400).json({
+        status: false,
+        message: `The User registration process failed.`,
+      });
     }
   },
   async get(req, res) {
@@ -82,6 +80,54 @@ module.exports = {
       console.log({ "catch error get Users ": error });
     }
   },
+  async getByKeys(req, res) {
+    try {
+      const { users_page, users_rows } = req.params;
+
+      // Calculate offset
+      const offset = (parseInt(users_page) - 1) * parseInt(users_rows);
+
+      // Retreive orders with pagination
+      const { rows, count } = await User.findAndCountAll({
+        limit: parseInt(users_rows), // Limite du nombre d'éléments par page
+        offset: offset, // Décalage (offset) des résultats
+        order: [["firstname", "ASC"]], // created_at / updated_at
+      });
+
+      if (rows == "" || rows == null) {
+        return res.status(200).json({
+          status: true,
+          length: 0,
+          message: "No information available.",
+        });
+      }
+
+      const usersSorted = rows.sort(function (a, b) {
+        if (a.firstname < b.firstname) {
+          return -1;
+        }
+      });
+      const users = usersSorted;
+
+      // Nombre total de pages
+      const totalPages = Math.ceil(count / users_rows);
+
+      return res.status(200).json({
+        status: true,
+        length: users.length,
+        users: users, // Les résultats de la page demandée
+        totalUsers: count, // Nombre total de categories
+        totalPages: totalPages, // Nombre total de pages
+        currentPage: users_page, // Page actuelle
+        users_rows: users_rows, // Taille de la page
+      });
+    } catch (error) {
+      console.log({ "catch error get Users ": error });
+      return res
+        .status(400)
+        .json({ status: false, message: "catch error get Users" });
+    }
+  },
   async getByKey(req, res) {
     try {
       const { key } = req.params;
@@ -95,97 +141,69 @@ module.exports = {
         });
       }
 
-      return res.status(200).json({ status: 1, length: user.length, user });
+      return res.status(200).json({ status: true, length: user.length, user });
     } catch (error) {
       console.log({ "catch error get User by key ": error });
     }
   },
   async update(req, res) {
     try {
-      const {
-        prename,
-        name,
-        gender,
-        telephone,
-        mail,
-        birth,
-        birth_location,
-        role,
-        username,
-        password,
-      } = req.body;
-      const { id } = req.params;
-
-      const thumbnails = req?.file?.filename || "";
-
-      const phone = telephone || null;
-      if (phone) {
-        const check_phone = await User.findOne({
-          where: { telephone: telephone },
-        });
-        if (check_phone) {
-          return res.status(400).json({
-            status: 0,
-            message: "The phone number is already used!",
-          });
-        }
-      }
-
-      const email = mail || null;
-      if (email) {
-        const check_mail = await User.findOne({ where: { mail: mail } });
-        if (check_mail) {
-          return res
-            .status(400)
-            .json({ status: 0, message: "The mail is already used!" });
-        }
-      }
-
-      const check_username = await User.findOne({
-        where: { username: username },
-      });
-      if (check_username) {
-        return res.status(400).json({
-          status: 0,
-          message: `The username ${username} is already used!`,
-        });
-      }
+      const { id, firstname, lastname, gender, telephone, mail, sys_role } =
+        req.body;
 
       const user = await User.update(
         {
-          prename,
-          name,
+          firstname,
+          lastname,
           gender,
           telephone,
           mail,
-          birth,
-          birth_location,
-          role,
-          username,
-          password,
-          thumbnails,
+          sys_role,
         },
         { where: { id: id } }
       );
 
       if (user) {
         return res.status(200).json({
-          status: 1,
-          message: `The update of ${
-            prename.charAt(0).toUpperCase() + prename.slice(1).toLowerCase()
-          } ${name.toUpperCase()} has been successfully done.`,
+          status: true,
+          message: `The user update process of ${
+            firstname.charAt(0).toUpperCase() + firstname.slice(1).toLowerCase()
+          } ${lastname.toUpperCase()} has been successfully done.`,
           user,
         });
       }
-      return res.status(400).json({
-        status: 0,
-        message: `The update of ${
-          prename.charAt(0).toUpperCase() + prename.slice(1).toLowerCase()
-        } ${name.toUpperCase()} failed.`,
-        user,
-      });
     } catch (error) {
       console.log({ "catch error update User ": error });
+      return res.status(400).json({
+        status: false,
+        message: `The user update process failed.`,
+      });
+    }
+  },
+  async activation(req, res) {
+    try {
+      const { id, status } = req.params;
+
+      const user = await User.update(
+        { status: status == 1 ? 0 : 1 },
+        { where: { id: id } }
+      );
+
+      if (user) {
+        return res.status(200).json({
+          status: true,
+          message: `The account ${
+            status == 1 ? "desactivation" : "activation"
+          } process has been successfully done.`,
+          user,
+        });
+      }
+    } catch (error) {
+      console.log({ "catch error update User ": error });
+      return res.status(400).json({
+        status: false,
+        message: `The account Activation/Desactivation process failed.`,
+      });
     }
   },
   async delete(req, res) {

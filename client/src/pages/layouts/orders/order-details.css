@@ -1,98 +1,114 @@
 .order-details {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: var(--white-color);
+}
+.order-details .inner,
+.order-details .outer {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+.order-details .inner {
   width: 100%;
   height: 100%;
   display: flex;
   background-color: var(--white-color);
 }
-.order-details .od-left,
-.order-details .od-right {
+.order-details .inner .od-left,
+.order-details .inner .od-right {
   height: 100%;
 }
-.order-details .od-left {
+.order-details .inner .od-left {
   width: 20%;
   border-right: 1px solid var(--grey-color-3);
   display: block;
 }
-.order-details .od-left .button {
+.order-details .inner .od-left .button {
   color: var(--black-color);
   display: flex;
   align-items: center;
   font-size: var(--size-07);
 }
-.order-details .od-left .button .icon {
+.order-details .inner .od-left .button .icon {
   margin-right: var(--size-05);
 }
-.order-details .od-left .od-left-head {
+.order-details .inner .od-left .od-left-head {
   width: 100%;
   text-align: center;
   padding: var(--size-1) 0;
 }
-.order-details .od-left .od-left-head span {
+.order-details .inner .od-left .od-left-head span {
   color: var(--grey-color-1);
   font-family: 600;
 }
-.order-details .od-left .od-left-head .t-2 {
+.order-details .inner .od-left .od-left-head .t-2 {
   color: var(--black-color);
   font-size: var(--size-105);
   font-weight: 800;
   margin: 0;
 }
-.order-details .od-left .od-left-details {
+.order-details .inner .od-left .od-left-details {
   display: block;
 }
-.order-details .od-left .od-left-details .column {
+.order-details .inner .od-left .od-left-details .column {
   display: flex;
   flex-direction: column;
   margin-bottom: var(--size-05);
 }
-.order-details .od-left .od-left-details .column .t-2 {
+.order-details .inner .od-left .od-left-details .column .t-2 {
   font-weight: 600;
 }
 /*  */
-.order-details .od-right {
+.order-details .inner .od-right {
   width: 80%;
   padding: var(--size-02);
 }
-.order-details .od-right .odr-actions {
+.order-details .inner .od-right .odr-actions {
   width: 100%;
   height: 30px;
   display: flex;
   align-items: center;
   margin-bottom: var(--size-05);
 }
-.order-details .od-right .odr-actions .t-3 {
+.order-details .inner .od-right .odr-actions .t-3 {
   margin: 0;
   margin-right: var(--size-1);
   font-size: var(--size-1);
 }
-.order-details .od-right .odr-actions .button {
+.order-details .inner .od-right .odr-actions .button {
   color: var(--color-4);
   font-size: var(--size-07);
   margin-right: var(--size-03);
 }
-.order-details .od-right .odr-actions .button.canceled {
+.order-details .inner .od-right .odr-actions .button.canceled {
   background-color: var(--red-color);
   color: var(--white-color);
 }
-.order-details .od-right .odr-actions .button.approuved {
+.order-details .inner .od-right .odr-actions .button.approuved {
   background-color: var(--color-4);
   color: var(--black-color);
 }
-.order-details .od-right .odr-actions .button.delivered {
+.order-details .inner .od-right .odr-actions .button.delivered {
   background-color: var(--green-color);
   color: var(--white-color);
 }
-.order-details .od-right .odr-container {
+.order-details .inner .od-right .odr-actions .button.print {
+  background-color: var(--black-color);
+  color: var(--white-color);
+}
+.order-details .inner .od-right .odr-container {
   width: 100%;
   height: auto;
   max-height: calc(100% - 35px);
   overflow-y: auto;
 }
-.order-details .od-right .odr-container .table .row {
+.order-details .inner .od-right .odr-container .table .row {
   display: flex;
   align-items: center;
 }
-.order-details .od-right .odr-container .table .row img {
+.order-details .inner .od-right .odr-container .table .row img {
   width: 35px;
   height: 35px;
   border: 1px solid var(--grey-color-2);
@@ -100,42 +116,49 @@
   padding: var(--size-02);
   margin-right: var(--size-03);
 }
-.order-details .od-right .odr-container .table .row span {
+.order-details .inner .od-right .odr-container .table .row span {
   font-size: var(--size-1);
   font-weight: 700;
 }
-.order-details .od-right .odr-container .table .btn-action {
+.order-details .inner .od-right .odr-container .table .btn-action {
   background-color: var(--black-color);
   font-size: var(--size-07);
   margin: 0 var(--size-02);
 }
-.order-details .od-right .odr-container .search-box {
+.order-details .inner .od-right .odr-container .search-box {
   width: 100%;
   display: flex;
   padding: var(--size-07) 0;
 }
-.order-details .od-right .odr-container .search-box .input-div {
+.order-details .inner .od-right .odr-container .search-box .input-div {
   margin: 0;
 }
-.order-details .od-right .odr-container .search-box .button {
+.order-details .inner .od-right .odr-container .search-box .button {
   background-color: var(--color-1);
 }
-.order-details .od-right .odr-container .contacts {
+.order-details .inner .od-right .odr-container .contacts {
   width: 100%;
   display: block;
 }
-.order-details .od-right .odr-container .contacts .t-2 {
+.order-details .inner .od-right .odr-container .contacts .t-2 {
   color: var(--grey-color-1);
 }
-.order-details .od-right .odr-container .contacts .contact-channels {
+.order-details .inner .od-right .odr-container .contacts .contact-channels {
   display: flex;
   margin-bottom: var(--size-1);
 }
-.order-details .od-right .odr-container .contacts .contact-channels .button {
+.order-details
+  .inner
+  .od-right
+  .odr-container
+  .contacts
+  .contact-channels
+  .button {
   color: var(--color-4);
   margin-right: var(--size-05);
 }
 .order-details
+  .inner
   .od-right
   .odr-container
   .contacts
@@ -144,17 +167,23 @@
   background-color: var(--color-2);
   color: var(--white-color);
 }
-.order-details .od-right .odr-container .contacts .sending-box {
+.order-details .inner .od-right .odr-container .contacts .sending-box {
   width: 100%;
   text-align: center;
 }
-.order-details .od-right .odr-container .contacts .sending-box .button {
+.order-details .inner .od-right .odr-container .contacts .sending-box .button {
   width: 50%;
   background-color: var(--color-1);
 }
-.order-details .od-right .odr-container .table .button {
+.order-details .inner .od-right .odr-container .table .button {
   background-color: var(--black-color);
   color: var(--white-color);
   font-size: var(--size-07);
   margin: 0 var(--size-02);
+}
+/* Outer */
+.order-details .outer {
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  padding: var(--size-1);
 }

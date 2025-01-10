@@ -15,6 +15,20 @@ export function onGetUsers(axiosPrivate, signal) {
       });
   });
 }
+export function onGetUsersByRange(usersPage, usersRows, axiosPrivate, signal) {
+  return new Promise(async (resolve, reject) => {
+    await axiosPrivate
+      .get(USERS + "/" + usersPage + "/" + usersRows, {
+        signal: signal,
+      })
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
 export function onCreateUser(axiosPrivate, data) {
   const formData = {
     firstname: data?.firstname,
@@ -39,7 +53,46 @@ export function onCreateUser(axiosPrivate, data) {
       });
   });
 }
-export function onUpdateUser(axiosPrivate, data) {}
+export function onUpdateUser(data, axiosPrivate) {
+  const formData = {
+    id: data?.id,
+    firstname: data?.firstname,
+    lastname: data?.lastname,
+    gender: data?.gender,
+    telephone: data?.telephone,
+    mail: data?.mail,
+    sys_role: data?.sys_role,
+  };
+  //
+  return new Promise(async (resolve, reject) => {
+    await axiosPrivate
+      .put(USERS + "/auth/update", formData, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      })
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
+export function onActivationUser(data, axiosPrivate) {
+  return new Promise(async (resolve, reject) => {
+    await axiosPrivate
+      .patch(USERS + "/auth/activation/" + data?.id + "/" + data?.status, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      })
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+}
 // newsletter
 export function onSubscription(data) {
   const formData = {
@@ -89,7 +142,8 @@ export function onMessaging(data) {
   };
   //
   return new Promise(async (resolve, reject) => {
-    await axios.post("/message/send", formData, {
+    await axios
+      .post("/message/send", formData, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       })

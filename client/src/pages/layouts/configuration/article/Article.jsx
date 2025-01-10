@@ -20,7 +20,7 @@ import {
   onCreateArticle,
   onUpdateArticle,
   onActivationArticle,
-  onGetCategories,
+  onGetCategoriesForPage,
 } from "../../../../services/configuration";
 import useAxiosPrivate from "../../../../hooks/context/state/useAxiosPrivate";
 import MessageBox from "../../../../components/msgBox/MessageBox";
@@ -37,20 +37,15 @@ const Article = () => {
   const [isShowingMessage, setIsShowingMessage] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
   const [imagePreview, setImagePreview] = useState("");
+  const [articlesPage, setArticlesPage] = useState(1);
+  const [articlesRows, setArticlesRows] = useState(5);
 
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
     const signal = controller.signal;
 
-    onGetArticles(axiosPrivate, signal).then((result) => {
-      dispatch({
-        type: "setUp/getArticles",
-        payload: result,
-      });
-    });
-
-    onGetCategories(axiosPrivate, signal).then((result) => {
+    onGetCategoriesForPage(signal).then((result) => {
       dispatch({
         type: "setUp/getCategories",
         payload: result,
@@ -62,6 +57,26 @@ const Article = () => {
       isMounted && controller.abort();
     };
   }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    onGetArticles(articlesPage, articlesRows, axiosPrivate, signal).then(
+      (result) => {
+        dispatch({
+          type: "setUp/getArticles",
+          payload: result,
+        });
+      }
+    );
+
+    return () => {
+      isMounted = false;
+      isMounted && controller.abort();
+    };
+  }, [articlesPage, articlesRows]);
 
   const articles = useSelector(
     (state) => state.setInitConf?.initArticles?.articlesData
@@ -100,7 +115,12 @@ const Article = () => {
               setIsShowingMessage(true);
               setMessage({ type: "success", text: response?.data?.message });
               //
-              onGetArticles(axiosPrivate, signal).then((result) => {
+              onGetArticles(
+                articlesPage,
+                articlesRows,
+                axiosPrivate,
+                signal
+              ).then((result) => {
                 dispatch({
                   type: "setUp/getArticles",
                   payload: result,
@@ -146,7 +166,12 @@ const Article = () => {
               setIsShowingMessage(true);
               setMessage({ type: "success", text: response?.data?.message });
               //
-              onGetArticles(axiosPrivate, signal).then((result) => {
+              onGetArticles(
+                articlesPage,
+                articlesRows,
+                axiosPrivate,
+                signal
+              ).then((result) => {
                 dispatch({
                   type: "setUp/getArticles",
                   payload: result,
@@ -209,12 +234,14 @@ const Article = () => {
             icon: "success",
           });
           //
-          onGetArticles(axiosPrivate, signal).then((result) => {
-            dispatch({
-              type: "setUp/getArticles",
-              payload: result,
-            });
-          });
+          onGetArticles(articlesPage, articlesRows, axiosPrivate, signal).then(
+            (result) => {
+              dispatch({
+                type: "setUp/getArticles",
+                payload: result,
+              });
+            }
+          );
           //
         }
         return () => {
@@ -359,17 +386,52 @@ const Article = () => {
           </div>
           <div className="pagination">
             <div className="p-left">
-              <select>
+              <select onChange={(e) => setArticlesRows(e?.target?.value)}>
                 <option value={5}>5 lignes</option>
                 <option value={10}>10 lignes</option>
                 <option value={15}>15 lignes</option>
                 <option value={20}>20 lignes</option>
               </select>
-              <span>1-5 de 50 resultats</span>
+              <span>
+                Page : {articles?.data?.currentPage}/
+                {articles?.data?.totalPages}
+              </span>
+              <span>|</span>
+              <span>
+                1-{articles?.data?.articles?.length} de{" "}
+                {articles?.data?.totalArticles} resultats
+              </span>
             </div>
             <div className="p-right">
-              <button className="button btn-previous">Précedent</button>
-              <button className="button btn-next">Suivant</button>
+              <button
+                className={
+                  parseInt(articles?.data?.currentPage) === 1
+                    ? "button btn-inactive"
+                    : "button btn-active"
+                }
+                onClick={() =>
+                  setArticlesPage((prev) => (prev === 1 ? 1 : prev - 1))
+                }
+              >
+                Précedent
+              </button>
+              <button
+                className={
+                  articles?.data?.totalPages <= 1 ||
+                  articles?.data?.currentPage === articles?.data?.totalPages
+                    ? "button btn-inactive"
+                    : "button btn-active"
+                }
+                onClick={() =>
+                  setArticlesPage((next) =>
+                    next === articles?.data?.totalPages
+                      ? articles?.data?.totalPages
+                      : next + 1
+                  )
+                }
+              >
+                Suivant
+              </button>
             </div>
           </div>
         </div>

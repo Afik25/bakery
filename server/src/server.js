@@ -18,7 +18,7 @@ const credentials = require("./middlewares/credentials");
 const corsOptions = require("./middlewares/corsOptions");
 const cookieParser = require("cookie-parser");
 const logEvents = require("./middlewares/logEvents");
-const verifyJWT = require("./middlewares/verifyJWT");
+// const verifyJWT = require("./middlewares/verifyJWT");
 const routes = require("./routes");
 
 // --- 2. Initialisation de l'application Express ---
@@ -132,7 +132,7 @@ if (process.env.NODE_ENV === "production") {
   // Créer le serveur HTTPS
   https.createServer(credentialsSSL, app).listen(HTTPS_PORT, () => {
     console.log(
-      `HTTPS Server running int ${process.env.NODE_ENV} at https://${process.env.PROD_DB_HOST}:${HTTPS_PORT}`
+      `HTTPS Server running in ${process.env.NODE_ENV} at https://${process.env.PROD_DB_HOST}:${HTTPS_PORT}`
     );
   });
 } else {

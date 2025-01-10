@@ -36,9 +36,21 @@ module.exports = {
   },
   async get(req, res) {
     try {
+      const { operations_page, operations_rows } = req.params;
+
+      // Calculate offset
+      const offset =
+        (parseInt(operations_page) - 1) * parseInt(operations_rows);
+
+      // Retreive orders with pagination
+      const { rows, count } = await StockMovement.findAndCountAll({
+        limit: parseInt(operations_rows), // Limite du nombre d'éléments par page
+        offset: offset, // Décalage (offset) des résultats
+        order: [["created_at", "DESC"]], // created_at / updated_at
+      });
       const articles = await Article.findAll();
-      const _stockMovements = await StockMovement.findAll();
-      if (_stockMovements == "" || _stockMovements == null) {
+
+      if (rows == "" || rows == null) {
         return res.status(200).json({
           status: true,
           length: 0,
@@ -47,22 +59,22 @@ module.exports = {
       }
 
       let stockMovementsArray = [];
-      for (let i = 0; i < _stockMovements.length; i++) {
-        const element = _stockMovements[i]?.article_id;
+      for (let i = 0; i < rows.length; i++) {
+        const element = rows[i]?.article_id;
         let _article = articles.filter((item, _) => item?.id === element);
         stockMovementsArray.push({
           article_title: _article[0]?.title,
           article_code: _article[0]?.code,
           article_thumbnail: _article[0]?.thumbnail,
-          id: _stockMovements[i]?.id,
-          article_id: _stockMovements[i]?.article_id,
-          dates: _stockMovements[i]?.dates,
-          type: _stockMovements[i]?.type,
-          quantity: _stockMovements[i]?.quantity,
-          description: _stockMovements[i]?.description,
-          status: _stockMovements[i]?.status,
-          updated_at: _stockMovements[i]?.updated_at,
-          created_at: _stockMovements[i]?.created_at,
+          id: rows[i]?.id,
+          article_id: rows[i]?.article_id,
+          dates: rows[i]?.dates,
+          type: rows[i]?.type,
+          quantity: rows[i]?.quantity,
+          description: rows[i]?.description,
+          status: rows[i]?.status,
+          updated_at: rows[i]?.updated_at,
+          created_at: rows[i]?.created_at,
         });
       }
 
@@ -71,26 +83,47 @@ module.exports = {
           return -1;
         }
       });
-      const stockMovements = stockMovementsSorted.reverse();
+      const stockMovements = stockMovementsSorted;
 
-      return res
-        .status(200)
-        .json({ status: true, length: stockMovements.length, stockMovements });
+      // Nombre total de pages
+      const totalPages = Math.ceil(count / operations_rows);
+
+      return res.status(200).json({
+        status: true,
+        length: stockMovements.length,
+        stockMovements: stockMovements, // Les résultats de la page demandée
+        totalStockMovements: count, // Nombre total de categories
+        totalPages: totalPages, // Nombre total de pages
+        currentPage: operations_page, // Page actuelle
+        operations_rows: operations_rows, // Taille de la page
+      });
     } catch (error) {
       console.log({ "catch error get StockMovements ": error });
+      return res
+        .status(400)
+        .json({ status: false, message: "catch error get StockMovements" });
     }
   },
   async getInventory(req, res) {
     try {
+      const { stocks_page, stocks_rows } = req.params;
+
+      // Calculate offset
+      const offset = (parseInt(stocks_page) - 1) * parseInt(stocks_rows);
+
+      // Retreive orders with pagination
       const articles = await Article.findAll();
-      const _distinctArticles = await StockMovement.findAll({
+      const { rows, count } = await StockMovement.findAndCountAll({
         attributes: [
           [Sequelize.fn("MAX", Sequelize.col("article_id")), "article_id"],
         ],
         group: ["article_id"],
+        limit: parseInt(stocks_rows), // Limite du nombre d'éléments par page
+        offset: offset, // Décalage (offset) des résultats
+        order: [["article_id", "ASC"]], // created_at / updated_at
       });
       //
-      if (_distinctArticles == "" || _distinctArticles == null) {
+      if (rows == "" || rows == null) {
         return res.status(200).json({
           status: true,
           length: 0,
@@ -100,8 +133,8 @@ module.exports = {
       //
       let stockStateArray = [];
       //
-      for (let i = 0; i < _distinctArticles.length; i++) {
-        const element = _distinctArticles[i]?.article_id;
+      for (let i = 0; i < rows.length; i++) {
+        const element = rows[i]?.article_id;
         let _article = articles.filter((item, _) => item?.id === element);
         //
         const dates = await StockMovement.findAll({
@@ -144,13 +177,25 @@ module.exports = {
         }
       });
       const articlesStocks = articlesStocksSorted;
+
+      // Nombre total de pages
+      const totalPages = Math.ceil(count / stocks_rows);
+
       return res.status(200).json({
         status: true,
         length: articlesStocks.length,
-        articlesStocks,
+        articlesStocks: articlesStocks, // Les résultats de la page demandée
+        totalStocks: count, // Nombre total de categories
+        totalPages: totalPages, // Nombre total de pages
+        currentPage: stocks_page, // Page actuelle
+        stocks_rows: stocks_rows, // Taille de la page
       });
     } catch (error) {
       console.log({ "catch error get StockMovements Inventory ": error });
+      return res.status(400).json({
+        status: false,
+        message: "catch error get StockMovements Inventory",
+      });
     }
   },
   async getInventoryByArticleId(req, res) {

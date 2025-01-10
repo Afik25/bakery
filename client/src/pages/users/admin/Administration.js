@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../users.css";
 import LOGO from "../../../assets/logo.png";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -12,6 +12,8 @@ import {
   BiEnvelope,
   FiUsers,
   FiPackage,
+  MdMenu,
+  MdClose,
 } from "../../../middlewares/icons";
 import { capitalize } from "../../../utils/utils";
 import { useSelector } from "react-redux";
@@ -20,6 +22,7 @@ import useLogout from "../../../hooks/context/state/useLogout";
 const Administration = () => {
   const navigate = useNavigate();
   const logout = useLogout();
+  const [isDrawer, setIsDrawer] = useState(false);
 
   const connectedUser = useSelector(
     (state) => state.setInitConf.initConnectedUser.connectedUserData
@@ -32,8 +35,9 @@ const Administration = () => {
 
   return (
     <div className="user">
-      <div className="left">
+      <div className={isDrawer ? "left is-open" : "left"}>
         <div className="header">
+          {isDrawer && <MdClose className="icon" onClick={() => setIsDrawer(!isDrawer)}/>}
           <img src={LOGO} alt="orga-logo" />
         </div>
         <div className="body">
@@ -148,6 +152,9 @@ const Administration = () => {
       </div>
       <div className="right">
         <div className="header">
+          <div className="drawer" onClick={() => setIsDrawer(!isDrawer)}>
+            <MdMenu className="icon" />
+          </div>
           <div className="options">
             <div className="option">
               <IoNotificationsOutline className="icon-element" />
